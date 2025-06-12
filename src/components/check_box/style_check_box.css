@@ -1,0 +1,17 @@
+label
+{
+    display: flex;
+
+    /* Centre items */
+    align-items: center;
+    justify-content: flex-start;
+
+    font-size: inherit;
+
+    background-color: var(--colour-button);
+}
+
+input[type=checkbox]
+{
+    margin-left: 1em;
+}
