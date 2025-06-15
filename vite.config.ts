@@ -7,8 +7,8 @@ const gTesting : boolean = false;
 // The content of the app's manifest file.
 const manifest : Partial<ManifestOptions> = 
 {
-    short_name: "Sort Viz",
-    name: "Sorting Visualiser (Image)",
+    short_name: "Grid Stacker",
+    name: "Grid Stacker",
     icons: 
     [
         {
@@ -23,7 +23,7 @@ const manifest : Partial<ManifestOptions> =
             purpose: "any maskable"
         }
     ],
-    start_url: gTesting ? "http://localhost:5173/" : "https://www.sort-viz-img.com/",
+    start_url: gTesting ? "http://localhost:5173/" : "https://www.grid-stacker.com/",
     display: "standalone",
     theme_color: "#000000",
     background_color: "#000000"
