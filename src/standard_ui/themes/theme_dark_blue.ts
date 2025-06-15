@@ -1,9 +1,9 @@
 import { Theme } from "./theme_types"
 
-const dark : Theme =
+const darkBlue : Theme =
 {
     // The theme's name.
-    name: "Dark",
+    name: "Ocean",
 
     isDark: true,
 
@@ -16,8 +16,8 @@ const dark : Theme =
 
         button: 
         {
-            background: "#000000",
-            border: "#FAFAFA",
+            background: "#060627",
+            border: "#B8B8FC",
             font: "#FFFFFF",
 
             backgroundInactive: "#353535",
@@ -29,29 +29,29 @@ const dark : Theme =
 
         buttonNextPage: 
         {
-            background: "#000000",
-            border: "#FAFAFA",
+            background: "#060627",
+            border: "#B8B8FC",
             font: "#FFFFFF",
-            icon: "#FAFAFA",
+            icon: "#B8B8FC",
             iconBackgroundColor: "transparent"
         },
 
         buttonTheme: 
         {
-            content: "#272727",
-            header: "#000000",
-            navBar: "#000000",
-            border: "#FAFAFA",
+            content: "#2F2F69",
+            header: "#060627",
+            navBar: "#060627",
+            border: "#B8B8FC",
         },
 
         checkBox: 
         {
-            background: "#000000",
-            border: "#FAFAFA",
+            background: "#060627",
+            border: "#B8B8FC",
             font: "#ffffff",
-            fontCheck: "#000000",
-            backgroundBoxSel: "#000000",
-            backgroundBoxUnsel: "#FFFFFF",
+            fontCheck: "#060627",
+            backgroundBoxSel: "#060627",
+            backgroundBoxUnsel: "#B8B8FC",
 
             backgroundInactive: "#353535",
             borderInactive: "#8B8B8B",
@@ -65,12 +65,12 @@ const dark : Theme =
 
         comboBox:
         {
-            background: "#000000",
-            backgroundItems: "#000000",
-            border: "#FAFAFA",
+            background: "#060627",
+            backgroundItems: "#060627",
+            border: "#B8B8FC",
             font: "#ffffff",
             fontPlaceholder: "#ffffff",
-            iconArrow: "#ffffff",
+            iconArrow: "#B8B8FC",
 
             backgroundInactive: "#353535",
             borderInactive: "#8B8B8B",
@@ -84,25 +84,25 @@ const dark : Theme =
         container:
         {
             background: "transparent",
-            border: "#FAFAFA",
+            border: "#B8B8FC",
         },
 
         countLabel:
         {
-            background: "#000000",
-            border: "#FAFAFA",
+            background: "#060627",
+            border: "#B8B8FC",
             font: "#ffffff",
             fontValue: "#ffffff",
-            backgroundValue: "#000000",
-            borderLeftColorValue: "#FAFAFA",
+            backgroundValue: "#060627",
+            borderLeftColorValue: "#B8B8FC",
         },
 
         textInput:
         {
             background: "transparent",
             font: "#FFFFFF",
-            border: "#FAFAFA",
-            eyeIcon: "#FAFAFA",
+            border: "#B8B8FC",
+            eyeIcon: "#B8B8FC",
 
             backgroundInactive: "#383737", 
             fontInactive: "#8B8B8B",
@@ -114,51 +114,51 @@ const dark : Theme =
 
         header: 
         {
-            background: "#000000",
-            border: "#FAFAFA",
-            logoColours: [ "#FAFAFA" ],
+            background: "#060627",
+            border: "#B8B8FC",
+            logoColours: [ "#B8B8FC" ],
             button: 
             {
-                font: "#FAFAFA",
-                icon: "#FAFAFA"
+                font: "#B8B8FC",
+                icon: "#B8B8FC"
             }
         },
 
         navBar: 
         {
-            background: "#000000",
-            border: "#FAFAFA",
+            background: "#060627",
+            border: "#B8B8FC",
             button: 
             {
-                fontActive: "#FAFAFA",
-                fontInactive: "#FAFAFA66",
-                iconActive: "#FAFAFA",
-                iconInactive: "#FAFAFA66",
+                fontActive: "#B8B8FC",
+                fontInactive: "#B8B8FC66",
+                iconActive: "#B8B8FC",
+                iconInactive: "#B8B8FC66",
             }
         },
 
         pageContainer:
         {
-            background: "#272727",
+            background: "#2F2F69",
         },
 
         popUp:
         {
-            backgroundTransparent: "#00000099",
-            background: "#272727",
-            border: "#FAFAFA",
+            backgroundTransparent: "#06062799",
+            background: "#2F2F69",
+            border: "#B8B8FC",
             font: "#FFFFFF",
 
-            buttonBackgroundColor: "#000000",
-            buttonBorderColor: "#FAFAFA",
+            buttonBackgroundColor: "#060627",
+            buttonBorderColor: "#B8B8FC",
             buttonFontColor: "#FFFFFF",
         },
 
         slider:
         {
-            borderCon: "#FAFAFA",
-            backgroundProgress: "#000000",
-            borderProgress: "#FAFAFA",
+            borderCon: "#B8B8FC",
+            backgroundProgress: "#060627",
+            borderProgress: "#B8B8FC",
             font: "#ffffff",
             backgroundTrack: "transparent",
 
@@ -173,19 +173,19 @@ const dark : Theme =
 
         table:
         {
-            background: "#272727",
-            backgroundHeaderCell: "#000000",
-            backgroundContentCell: "#000000",
-            border: "#FFFFFF",//"#272727",
+            background: "#2F2F69",
+            backgroundHeaderCell: "#060627",
+            backgroundContentCell: "#060627",
+            border: "#B8B8FC",//"#2F2F69",
             fontHeaderCell: "#FFFFFF",
             fontContentCell: "#FFFFFF"
         },
 
         loadArea:
         {
-            background: "#272727",
-            backgroundTranslucent: "#00000099",
-            loadIcon: "#FAFAFA",
+            background: "#2F2F69",
+            backgroundTranslucent: "#06062799",
+            loadIcon: "#B8B8FC",
         },
     },
 
@@ -193,30 +193,30 @@ const dark : Theme =
     {
         gridCell:
         {
-            empty: "#000000",
+            empty: "#060627",
             font: "#FFFFFF"
         },
 
         grid:
         {
-            background: "#272727"
+            background: "#2F2F69"
         },
 
         container:
         {
-            background: "#272727",
-            header: "#000000",
-            border: "#FAFAFA",
+            background: "#2F2F69",
+            header: "#060627",
+            border: "#B8B8FC",
             font: "#FFFFFF"
         },
 
         countLabel:
         {
-            backgroundTitle: "#000000",
-            backgroundCount: "#000000",
+            backgroundTitle: "#060627",
+            backgroundCount: "#060627",
             fontTitle: "#FFFFFF",
             fontCount: "#FFFFFF",
-            border: "#FFFFFF",
+            border: "#B8B8FC",
             // borderTitle: "#FFFFFF",
             // borderCount: "#FFFFFF"
         },
@@ -228,4 +228,4 @@ const dark : Theme =
     }
 };
 
-export { dark as default };
+export { darkBlue as default };

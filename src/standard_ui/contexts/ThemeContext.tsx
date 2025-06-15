@@ -94,7 +94,7 @@ function ThemeProvider({ children } : PropsThemeProvider)
     * Adds a theme.
 
     * Parameters:
-        @param pThemeName The name of the theme that will be set.
+        @param pTheme The name of the theme that will be added.
     */
     const addTheme = useCallback(
         (pTheme : Theme) : void =>

@@ -663,7 +663,7 @@ class Block
     {
         const lBlockTypes = !pBlocks ? Block.sTypeArray : Block.stringToBlockTypes(pBlocks);
 
-        return Block.sTypeArray[utils.getRandomInt(0, Block.sTypeArray.length - 1)];
+        return lBlockTypes[utils.getRandomInt(0, Block.sTypeArray.length - 1)];
     }
 
     /**

@@ -1,11 +1,11 @@
-import { CSSProperties, memo, useMemo } from 'react';
+import { CSSProperties, memo, useCallback, useMemo } from 'react';
 
 import { Theme } from '../../standard_ui/themes/theme_types';
 
 interface PropsButtonTheme
 {
     prTheme: Theme;
-    prOnPress: () => any;
+    prOnPress: (pThemeName : string) => any;
     prHeight?: number;
     prWidth?: number;
     prIsSelected: boolean;
@@ -76,9 +76,17 @@ const ButtonTheme = memo(
             [ prTheme ]
         );
 
+        const lOnPress = useCallback(
+            () =>
+            {
+                prOnPress(prTheme.name);
+            },
+            [ prOnPress, prTheme ]
+        );
+
         return (
             <div
-                onClick = { prOnPress }
+                onClick = { lOnPress }
                 style = { lStyleCon }
                 // activeOpacity = { 0.8 } // Changes the component's opacity when pressed.
             >

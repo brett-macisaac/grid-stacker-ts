@@ -31,6 +31,7 @@ import { lclStrgKeyPopUpBlackList } from '../../standard_ui/components/pop_up_st
 import { getTableDataHighScores } from "../../utils/utils_app_specific";
 import MetaStatsManager from '../../classes/MetaStatsManager';
 import GridSymbol from '../../classes/GridSymbol';
+import GameLandscape from './GameLandscape';
 
 function createBlockTallies() : Map<BlockType, number>
 {
@@ -90,7 +91,7 @@ function Game()
 
     const rfGameInProgress = useRef<boolean>(false);
 
-    const areMenuButtonsEnabled = useRef<boolean>(true);
+    const rfAreMenuButtonsEnabled = useRef<boolean>(true);
 
     const isBlockThePrevHeldBlock = useRef<boolean>(false);
 
@@ -154,17 +155,97 @@ function Game()
         []
     );
 
+    const lSpawnNextBlock = useCallback(
+        () =>
+        {
+            // If rfBlock has already been set (e.g. from the player 'holding' a block), do not spawn a new block in.
+            // i.e. a block should only be spawned if it's undefined.
+            if (rfBlock.current)
+            { return; }
+
+            rfBlock.current = rfNextBlocks.current[rfNextBlocks.current.length - 1].copy();
+            isBlockThePrevHeldBlock.current = false;
+
+            // Undraw the outline of the next block (as it's now the current block).
+            lUndrawNextBlockOutline();
+
+            let lCanSpawn = rfGrid.current.drawBlockAt(rfBlock.current, "TopThreeRows");
+
+            rfNextBlocks.current = [ 
+                Block.getRandomBlock(cxPrefs.prefs.blocks),
+                ...(rfNextBlocks.current.slice(0, rfNextBlocks.current.length - 1))
+            ];
+
+            rfNextBlock.current = rfNextBlocks.current[rfNextBlocks.current.length - 1].copy();
+
+            // Try to draw the outline of the next block.
+            lDrawNextBlockOutline();
+
+            if (lCanSpawn)
+            {
+                lIncrementTally(rfBlock.current.type);
+            }
+
+            reRender();
+
+            return lCanSpawn;
+        },
+        [ cxPrefs ]
+    );
+
+    /*
+    * Once a game is over, this function should be called to update the game's stats.
+    */
+    const lUpdateStats = useCallback(
+        async () =>
+        {
+            setIsLoading(true);
+
+            // The user's stats.
+            const lScoreNow = rfScore.current;
+            const lLinesNow = rfLines.current;
+
+            const lUsername : string = cxUser.user ? cxUser.user.username : cxPrefs.prefs.usernameGuest;
+
+            // Update the 'meta' stats.
+            MetaStatsManager.updateMetaStatsLocal(lScoreNow, lLinesNow);
+
+            const lKeyGridSize : string = Grid.getKeyGridSize(cxPrefs.prefs.cols, cxPrefs.prefs.rows);
+
+            // The grid-size key.
+            const lGameStatsLocal : GameStats = GameStatsManager.updateStatsLocal(cxPrefs.prefs.blocks, lKeyGridSize, lScoreNow, lLinesNow, lUsername);
+
+            let lGameStatsGlobal : GameStats | undefined = undefined;
+
+            if (cxUser.user)
+            {
+                lGameStatsGlobal = await GameStatsManager.updateStatsGlobal(cxPrefs.prefs.blocks, lKeyGridSize, lScoreNow, lLinesNow, lUsername);
+            }
+            else
+            {
+                lGameStatsGlobal = await GameStatsManager.getStatsGlobal(cxPrefs.prefs.blocks, lKeyGridSize);
+            }
+
+            rfRecords.current = getTableDataHighScores(lGameStatsGlobal, lGameStatsLocal);
+
+            reRender();
+
+            setIsLoading(false);
+        },
+        [ cxPrefs ]
+    );
+
     const handlePlay = useCallback(
         async () =>
         {
-            if (!areMenuButtonsEnabled.current)
+            if (!rfAreMenuButtonsEnabled.current)
                 return;
 
             // Set the game flag.
             rfGameInProgress.current = true;
 
             // Reset the game's state.
-            resetGame();
+            lResetGame();
 
             // The current period that defines the block's fall rate.
             let lFallPeriodCurrent = gFallPeriodMax;
@@ -180,7 +261,7 @@ function Game()
             let lPeriodCoefficient = 0;
 
             // Spawn the first block.
-            spawnNextBlock();
+            lSpawnNextBlock();
 
             while (true)
             {
@@ -222,20 +303,14 @@ function Game()
                         // Whether it's a 'perfect' clear, meaning that the grid is empty after the lines are cleared.
                         const lIsPerfectClear = rfGrid.current.isEmptyAfterClear();
 
-                        console.log(`Increment multiplier by ${lIsPerfectClear ? lNumFullLines : 1}`);
-
-                        console.log(`Multiplier before: ${rfMultiplier.current}`);
-
                         // If it's a perfect clear, increment by the number of lines cleared; otherwise, increment by 1.
                         rfMultiplier.current += lIsPerfectClear ? lNumFullLines : 1;
-
-                        console.log(`Multiplier after: ${rfMultiplier.current}`);
                     }
                     else
                     {
-                        // The minimum multiplier is the current level times 0.5. i.e. the user's multiplier increases
-                        // by 0.5 for every level they reach.
-                        const lMinMultiplier = Math.max(1, lLevel * 0.5);
+                        // The minimum multiplier is the current level times 1. i.e. the user's multiplier increases
+                        // by 1 for every level they reach.
+                        const lMinMultiplier = Math.max(1, lLevel * 1);
 
                         // Decrease multiplier by 1/3
                         rfMultiplier.current = Math.max(lMinMultiplier, Math.floor((2 / 3) * rfMultiplier.current));
@@ -247,7 +322,7 @@ function Game()
                     const lIsNewLevel = rfLines.current - gLengthLevel * lLevel >= 0;
 
                     if (lIsNewLevel)
-                        rfMultiplier.current += 0.5;
+                        rfMultiplier.current += 1;
 
                     // Multiply the base score.
                     lScoreFromLineClears *= rfMultiplier.current;
@@ -299,7 +374,7 @@ function Game()
                 }
 
                 // Create and spawn the next block.
-                const lValidSpawn = spawnNextBlock();
+                const lValidSpawn = lSpawnNextBlock();
 
                 // If the block cannot be spawned, end the game and notify the Player that the game is over.
                 if (!lValidSpawn)
@@ -316,7 +391,7 @@ function Game()
             rfBlock.current = undefined;
 
             // Disable the menu buttons temporarily so that the user doesn't accidentally click it.
-            disableMenuButtonsTemporarily();
+            lDisableMenuButtonsTemporarily();
 
             reRender();
 
@@ -324,18 +399,39 @@ function Game()
 
             console.log("Game over 2");
         },
-        []
+        [ lSpawnNextBlock, lUpdateStats ]
     );
 
     const handleExit = useCallback(
         () =>
         {
-            if (!areMenuButtonsEnabled.current)
+            if (!rfAreMenuButtonsEnabled.current)
                 return;
 
             navigate("/");
         },
         []
+    );
+
+    const lPlaySound = useCallback(
+        async (pSound : string) =>
+        {
+            // Disable sound on iOS/MAC due to performance issues.
+            if (/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent))
+                return;
+
+            if (!cxPrefs.prefs.soundOn)
+                return;
+
+            const lSoundStr = sounds[utils.getRandomInt(0, sounds.length - 1)];
+
+            let lSoundObj = new Audio(lSoundStr);
+
+            lSoundObj.volume = 0.03;
+
+            await lSoundObj.play();
+        },
+        [ cxPrefs ]
     );
 
     /*
@@ -401,7 +497,7 @@ function Game()
 
                         reRender();
 
-                        playSound(gSounds.removeBlock[lIndexSound]);
+                        lPlaySound(gSounds.removeBlock[lIndexSound]);
                         lIndexSound = (lIndexSound + 1) % gSounds.removeBlock.length;
 
                         await utils.sleepFor(lPausePerTile);
@@ -428,7 +524,7 @@ function Game()
 
                         reRender();
 
-                        playSound(gSounds.removeBlock[lIndexSound]);
+                        lPlaySound(gSounds.removeBlock[lIndexSound]);
                         lIndexSound = (lIndexSound + 1) % gSounds.removeBlock.length;
 
                         await utils.sleepFor(lPausePerTile);
@@ -441,7 +537,7 @@ function Game()
             // Return the number of full rows that were cleared.
             return lNumFullRows;
         },
-        []
+        [ lPlaySound ]
     );
 
     const moveBlock = useCallback(
@@ -456,15 +552,15 @@ function Game()
             {
                 if (pMovement == Vector2D.sLeft)
                 {
-                    playSound(gSounds.left);
+                    lPlaySound(gSounds.left);
                 }
                 else if (pMovement == Vector2D.sRight)
                 {
-                    playSound(gSounds.right);
+                    lPlaySound(gSounds.right);
                 }
                 else if (pMovement == Vector2D.sUp)
                 {
-                    playSound(gSounds.down);
+                    lPlaySound(gSounds.down);
                 }
 
                 lDrawNextBlockOutline();
@@ -474,7 +570,7 @@ function Game()
 
             return lDidMove;
         },
-        []
+        [ lPlaySound ]
     );
 
     const lDrawNextBlockOutline = useCallback(
@@ -498,17 +594,17 @@ function Game()
         []
     );
 
-    const playRotationSound = useCallback(
+    const lPlayRotationSound = useCallback(
         (pClockwise : boolean, p180 : boolean = true) =>
         {
             if (p180)
-                playSound(gSounds.rotate180);
+                lPlaySound(gSounds.rotate180);
             else if (pClockwise)
-                playSound(gSounds.clockwise);
+                lPlaySound(gSounds.clockwise);
             else
-                playSound(gSounds.anticlockwise);
+                lPlaySound(gSounds.anticlockwise);
         },
-        []
+        [ lPlaySound ]
     );
 
     /*
@@ -527,7 +623,7 @@ function Game()
 
             if (lDidRotate)
             {
-                playRotationSound(pClockwise, p180);
+                lPlayRotationSound(pClockwise, p180);
 
                 lDrawNextBlockOutline();
 
@@ -536,7 +632,7 @@ function Game()
 
             return lDidRotate;
         },
-        []
+        [ lPlayRotationSound, lDrawNextBlockOutline ]
     );
 
     /*
@@ -553,7 +649,7 @@ function Game()
             if (p180)
                 rfNextBlocks.current[pIndexNext].changeRotationIndex(pClockwise);
 
-            playRotationSound(pClockwise, p180);
+            lPlayRotationSound(pClockwise, p180);
 
             if (pIndexNext == rfNextBlocks.current.length - 1)
             {
@@ -566,7 +662,7 @@ function Game()
 
             reRender();
         },
-        []
+        [ lPlayRotationSound, lUndrawNextBlockOutline, lDrawNextBlockOutline ]
     );
 
     const clockwiseNextBlock = useCallback(
@@ -586,30 +682,6 @@ function Game()
         [ rotateNextBlock ]
     );
 
-    /*
-    * Tries to rotate the current block 180 degrees.
-    */
-    const rotateBlock180 = useCallback(
-        () =>
-        {
-            if (!(rfBlock.current instanceof Block))
-            { return false; }
-
-            let lDidRotate = rfBlock.current.rotate180(rfGrid.current);
-
-            if (lDidRotate)
-            {
-                lDrawNextBlockOutline();
-
-                playRotationSound(false, true);
-                reRender();
-            }
-
-            return lDidRotate;
-        },
-        []
-    );
-
     const rotateHeldBlock = useCallback(
         (pClockwise : boolean, p180 : boolean = false) =>
         {
@@ -627,11 +699,11 @@ function Game()
 
             rfGridHold.current.drawBlockAt(rfHeldBlock.current, "CentreMid");
 
-            playRotationSound(pClockwise);
+            lPlayRotationSound(pClockwise);
 
             reRender();
         },
-        []
+        [ lPlayRotationSound ]
     );
 
     const clockwiseHeldBlock = useCallback(
@@ -674,7 +746,7 @@ function Game()
 
             reRender();
         },
-        []
+        [ lUndrawNextBlockOutline, lDrawNextBlockOutline ]
     );
 
     const shiftBlock = useCallback(
@@ -689,7 +761,7 @@ function Game()
             {
                 const lSound = rfGrid.current.wasMoveBlockedByBoundary ? gSounds.impactBoundary : gSounds.impactBlocks;
 
-                playSound(lSound);
+                lPlaySound(lSound);
 
                 lDrawNextBlockOutline();
 
@@ -702,45 +774,7 @@ function Game()
             }
             reRender();
         },
-        []
-    );
-
-    const spawnNextBlock = useCallback(
-        () =>
-        {
-            // If rfBlock has already been set (e.g. from the player 'holding' a block), do not spawn a new block in.
-            // i.e. a block should only be spawned if it's undefined.
-            if (rfBlock.current)
-            { return; }
-
-            rfBlock.current = rfNextBlocks.current[rfNextBlocks.current.length - 1].copy();
-            isBlockThePrevHeldBlock.current = false;
-
-            // Undraw the outline of the next block (as it's now the current block).
-            lUndrawNextBlockOutline();
-
-            let lCanSpawn = rfGrid.current.drawBlockAt(rfBlock.current, "TopThreeRows");
-
-            rfNextBlocks.current = [ 
-                Block.getRandomBlock(cxPrefs.prefs.blocks),
-                ...(rfNextBlocks.current.slice(0, rfNextBlocks.current.length - 1))
-            ];
-
-            rfNextBlock.current = rfNextBlocks.current[rfNextBlocks.current.length - 1].copy();
-
-            // Try to draw the outline of the next block.
-            lDrawNextBlockOutline();
-
-            if (lCanSpawn)
-            {
-                incrementTally(rfBlock.current.type);
-            }
-
-            reRender();
-
-            return lCanSpawn;
-        },
-        []
+        [ lPlaySound, lDrawNextBlockOutline ]
     );
 
     const holdBlock = useCallback(
@@ -775,7 +809,7 @@ function Game()
 
                     rfBlock.current = undefined;
 
-                    spawnNextBlock();
+                    lSpawnNextBlock();
                 }
             }
             else
@@ -799,7 +833,7 @@ function Game()
             if (lCanSpawn)
             {
                 reRender(); 
-                playSound(gSounds.holdBlock);
+                lPlaySound(gSounds.holdBlock);
                 didHeldBlockJustSpawn.current = true;
             }
             else if (rfBlock.current)
@@ -814,7 +848,7 @@ function Game()
                 }
             }
         },
-        []
+        [ lSpawnNextBlock, lDrawNextBlockOutline, lPlaySound ]
     );
 
     const setHeldBlock = useCallback(
@@ -832,65 +866,12 @@ function Game()
         []
     );
 
-    const addScoreAndLines = useCallback(
-        (pScore : number, pLines : number) =>
-        {
-            rfScore.current += pScore
-            rfLines.current += pLines;
-        },
-        []
-    );
-
     const resetGameInfo = useCallback(
         () =>
         {
             rfScore.current = 0
             rfLines.current = 0;
             rfMultiplier.current = 1;
-        },
-        []
-    );
-
-    /*
-    * Once a game is over, this function should be called to update the game's stats.
-    */
-    const lUpdateStats = useCallback(
-        async () =>
-        {
-            setIsLoading(true);
-
-            // The user's stats.
-            const lScoreNow = rfScore.current;
-            const lLinesNow = rfLines.current;
-
-            const lIsGuest : boolean = !cxUser.user;
-
-            const lUsername : string = cxUser.user ? cxUser.user.username : cxPrefs.prefs.usernameGuest;
-
-            // Update the 'meta' stats.
-            MetaStatsManager.updateMetaStatsLocal(lScoreNow, lLinesNow);
-
-            const lKeyGridSize : string = Grid.getKeyGridSize(cxPrefs.prefs.cols, cxPrefs.prefs.rows);
-
-            // The grid-size key.
-            const lGameStatsLocal : GameStats = GameStatsManager.updateStatsLocal(cxPrefs.prefs.blocks, lKeyGridSize, lScoreNow, lLinesNow, lUsername);
-
-            let lGameStatsGlobal : GameStats | undefined = undefined;
-
-            if (cxUser.user)
-            {
-                lGameStatsGlobal = await GameStatsManager.updateStatsGlobal(cxPrefs.prefs.blocks, lKeyGridSize, lScoreNow, lLinesNow, lUsername);
-            }
-            else
-            {
-                lGameStatsGlobal = await GameStatsManager.getStatsGlobal(cxPrefs.prefs.blocks, lKeyGridSize);
-            }
-
-            rfRecords.current = getTableDataHighScores(lGameStatsGlobal, lGameStatsLocal);
-
-            reRender();
-
-            setIsLoading(false);
         },
         []
     );
@@ -903,7 +884,7 @@ function Game()
         []
     );
 
-    const incrementTally = useCallback(
+    const lIncrementTally = useCallback(
         (pBlockType : BlockType) =>
         {
             setBlockTallies(
@@ -923,65 +904,50 @@ function Game()
         []
     );
 
-    const resetNextBlocks = useCallback(
+    const lResetNextBlocks = useCallback(
         () =>
         {
             rfNextBlocks.current = Block.getRandomBlocks(4, cxPrefs.prefs.blocks);
 
             rfNextBlock.current = rfNextBlocks.current[rfNextBlocks.current.length - 1].copy();
         },
-        []
+        [ cxPrefs ]
     );
 
-    const resetGame = useCallback(
+    const lResetGame = useCallback(
         () =>
         {
             rfGrid.current.reset();
             resetGameInfo();
             resetTallies();
-            resetNextBlocks();
+            lResetNextBlocks();
             setHeldBlock(undefined);
             reRender();
         },
-        []
+        [ resetGameInfo, resetTallies, lResetNextBlocks ]
     );
 
     /*
     * This is designed to be called at the end of a game to disable the menu buttons (i.e. the 'PLAY' and 'EXIT') buttons
     */
-    const disableMenuButtonsTemporarily = () =>
-    {
-        areMenuButtonsEnabled.current = false;
-
-        const enableMenuButtons = () => { areMenuButtonsEnabled.current = true };
-
-        setTimeout(enableMenuButtons, 1000);
-    };
-
-    const reRender = () =>
-    {
-        setUpdater({});
-    }
-
-    const playSound = useCallback(
-        async (pSound : string) =>
+    const lDisableMenuButtonsTemporarily = useCallback(
+        () =>
         {
-            // Disable sound on iOS/MAC due to performance issues.
-            if (/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent))
-                return;
+            rfAreMenuButtonsEnabled.current = false;
 
-            if (!cxPrefs.prefs.soundOn)
-                return;
+            const lEnableMenuButtons = () => { rfAreMenuButtonsEnabled.current = true };
 
-            const lSoundStr = sounds[utils.getRandomInt(0, sounds.length - 1)];
+            setTimeout(lEnableMenuButtons, 1000);
+        }, 
+        []
+    );
 
-            let lSoundObj = new Audio(lSoundStr);
-
-            lSoundObj.volume = 0.03;
-
-            await lSoundObj.play();
+    const reRender = useCallback(
+        () =>
+        {
+            setUpdater({});
         },
-        [ cxPrefs ]
+        []
     );
 
     const rfKeysDown = useRef<Set<string>>(new Set<string>());
@@ -1092,7 +1058,7 @@ function Game()
                 swapNextBlockWithHeldBlock();
             }
         },
-        []
+        [ shiftBlock, moveBlock, rotateNextBlock, rotateHeldBlock, rotateBlock, holdBlock, swapNextBlockWithHeldBlock ]
     );
 
     const lGameButtons = useMemo<GameButtons>(
@@ -1115,28 +1081,11 @@ function Game()
                 rotate180: { onPress: () => rotateBlock(true, true), symbol: new GridSymbol('rotate180', lRandomColours[2]) },
 
                 hold: { onPress: holdBlock, symbol: new GridSymbol('hold', lRandomColours[3]) },
-            };
 
-            // return {
-            //     play: handlePlay,
-            //     exit: handleExit,
-            //     left: () => moveBlock(Vector2D.sLeft),
-            //     right: () => moveBlock(Vector2D.sRight),
-            //     clockwise: () => rotateBlock(true),
-            //     anticlockwise: () => rotateBlock(false),
-            //     down: () => { gSoftDrop = !gSoftDrop; },
-            //     downMax: () => shiftBlock(Vector2D.sUp),
-            //     leftMax: () => shiftBlock(Vector2D.sLeft),
-            //     rightMax: () => shiftBlock(Vector2D.sRight),
-            //     rotate180: rotateBlock180,
-            //     hold: holdBlock,
-            //     clockwiseNext: (pIndexNext : number) => rotateNextBlock(pIndexNext, true),
-            //     anticlockwiseNext: (pIndexNext : number) => rotateNextBlock(pIndexNext, false),
-            //     clockwiseHeld: () => rotateHeldBlock(true),
-            //     anticlockwiseHeld: () => rotateHeldBlock(true),
-            // };
+                swapHoldWithNext: { onPress: swapNextBlockWithHeldBlock, symbol: new GridSymbol("swap", lRandomColours[3]) }
+            };
         },
-        [ moveBlock, rotateBlock, shiftBlock, rotateBlock180, holdBlock ]
+        [ moveBlock, rotateBlock, shiftBlock, holdBlock ]
     );
 
     // const lGridHold = new Grid(4, 4);
@@ -1145,25 +1094,35 @@ function Game()
     //     lGridHold.drawBlockAt(rfHeldBlock.current, "CentreMid", false);
     // }
 
-    // if (cxWindowSize.isLandscape)
-    // {
-    //     return (
-    //         <GameLandscape 
-    //             prGrid = { rfGrid.current }
-    //             prBlockTallies = { blockTallies }
-    //             prNextBlocks = { rfNextBlocks.current }
-    //             prGridHold = { lGridHold }
-    //             prGameInProgress = { rfGameInProgress.current }
-    //             prActiveBlocks = { cxPrefs.prefs.blocks }
-    //             prStats = { stats.current }
-    //             prHandlers = { lHandlers }
-    //             prButtonSymbols = { gridSymbols }
-    //             pUpdater = { updater }
-    //         />
-    //     );
-    // }
-    // else
-    // {
+    if (cxWindowSize.isLandscape && !cxWindowSize.isBigScreen)
+    {
+        return (
+            <GameLandscape
+                prGrid = { rfGrid.current }
+                prBlockTallies = { stBlockTallies }
+                prNextBlocks = { rfNextBlocks.current }
+                prGridHold = { rfGridHold.current }
+                prGameInProgress = { rfGameInProgress.current }
+                prActiveBlocks = { cxPrefs.prefs.blocks }
+                prStats = { rfRecords.current }
+                prScore = { rfScore.current }
+                prMultiplier = { rfMultiplier.current }
+                prLinesCleared = { rfLines.current }
+                prGameButtons = { lGameButtons }
+                prOnPressPlay = { handlePlay }
+                prOnPressExit = { handleExit }
+                prClockwiseNext = { clockwiseNextBlock }
+                prAntiClockwiseNext = { antiClockwiseNextBlock }
+                prClockwiseHeld = { clockwiseHeldBlock }
+                prAntiClockwiseHeld = { antiClockwiseHeldBlock }
+                prSwapNextBlockWithHeldBlock = { swapNextBlockWithHeldBlock }
+                prUpdater = { stUpdater }
+                prIsLoading = { stIsLoading }
+            />
+        );
+    }
+    else
+    {
         return (
             <GamePortrait 
                 prGrid = { rfGrid.current }
@@ -1188,7 +1147,7 @@ function Game()
                 prIsLoading = { stIsLoading }
             />
         );
-    // }
+    }
 }
 
 /*

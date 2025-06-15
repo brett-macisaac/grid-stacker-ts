@@ -130,7 +130,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
             const gMaxHeightTallyGrid = Math.floor((lHeightConTop - 7 * gConTopSideRowGap - gFontSizeTitle - 2 * gConTopSidePadding) / 7);
             const gMaxWidthTallyGrid = Math.floor(lWidthTopSide - 2 * gConTopSidePadding - 2);
 
-            return { width: gMaxWidthTallyGrid, height: gMaxHeightTallyGrid };
+            return { width: Math.max(40, gMaxWidthTallyGrid), height: Math.max(40, gMaxHeightTallyGrid)};
         },
         [ lWidthTopSide ]
     );
@@ -188,7 +188,8 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
         () =>
         {
             return [
-                prGameButtons.anticlockwise, prGameButtons.down, prGameButtons.rotate180, prGameButtons.downMax, prGameButtons.clockwise
+                prGameButtons.anticlockwise, prGameButtons.rotate180, prGameButtons.swapHoldWithNext, prGameButtons.downMax, prGameButtons.clockwise
+                // prGameButtons.anticlockwise, prGameButtons.down, prGameButtons.rotate180, prGameButtons.downMax, prGameButtons.clockwise
             ];
         },
         [ prGameButtons ]
@@ -296,7 +297,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
         []
     );
 
-    const lStyleGridTally = useMemo<CSSProperties>(
+    const lStyleGridSideContainers = useMemo<CSSProperties>(
         () =>
         {
             return {
@@ -318,7 +319,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
             <div style = { styles.conTop }>
 
                 {/* Block Tallies */}
-                <div style = { lStyleConBlockTallies }>
+                <div style = { lStyleConBlockTallies } className = 'hideScrollBar'>
                     <TextStd prText = "TALLY" prIsBold prStyle = { styles.lblTitle } />
                     {
                         Block.sTypeArray.map(
@@ -347,8 +348,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
                                         prMaxWidth = { lMaxDimensionsTallyGrids.width } 
                                         prColourBackground='transparent'
                                         prColourBorder = { theme.std.pageContainer.background }
-                                        prStyle = { lStyleGridTally }
-                                        //prOnClick = { () => { toggleBlock(pBlockType); } }
+                                        prStyle = { lStyleGridSideContainers }
                                     />
                                 );
                             }
@@ -389,6 +389,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
                                     prColourBorder = { theme.std.pageContainer.background }
                                     prStyle = { lStyleGridGame }
                                     prUpdater = { prUpdater }
+                                    prOnPress = { prGameButtons.down.onPress }
                                 />
                             )
                         }
@@ -419,7 +420,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
                                             // prColourBorder = { pIndex == prNextBlocks.length - 1 ? theme.cst.game.borderNextBlock : theme.std.pageContainer.background }
                                             prColourBorder = { pIndex == prNextBlocks.length - 1 ? prNextBlocks[prNextBlocks.length - 1].getColour() : theme.std.pageContainer.background }
                                             prColourBackground = 'transparent'
-                                            prStyle = { lStyleGridTally }
+                                            prStyle = { lStyleGridSideContainers }
                                             prOnPressLeft = { prAntiClockwiseNext } 
                                             prOnPressRight = { prClockwiseNext }
                                             prItemOnPress = { pIndex }
@@ -430,14 +431,14 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
                         }
                     </div>
 
-                    <GridDisplayer 
+                    {/* <GridDisplayer 
                         prGrid = { gSymbolSwap.grid }
                         prMaxHeight = { lMaxDimensionsTallyGrids.height } prMaxWidth = { lMaxDimensionsTallyGrids.width } 
                         prColourBackground = 'transparent' prColourBorder = { prGameButtons.hold.symbol.colour }
                         prColourFilledCell = { prGameButtons.hold.symbol.colour }
-                        prStyle = { lStyleGridTally } prPadding = { 4 }
+                        prStyle = { lStyleGridSideContainers } prPadding = { 4 }
                         prOnPress = { prSwapNextBlockWithHeldBlock }
-                    />
+                    /> */}
 
                     <div style = { styles.conHoldBlock }>
                         <TextStd prText = "HOLD" prIsBold prStyle = { styles.lblTitle } />
@@ -450,7 +451,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
                             prMaxWidth = { lMaxDimensionsTallyGrids.width } 
                             prColourBackground = 'transparent'
                             prColourBorder = { theme.std.pageContainer.background }
-                            prStyle = { lStyleGridTally }
+                            prStyle = { lStyleGridSideContainers }
                             prUpdater = { prUpdater }
                         />
                     </div>
@@ -583,7 +584,8 @@ const styles : { [ key: string ]: CSSProperties } =
         padding: 0,
         // rowGap: spacing,
         //maxWidth: 800,
-        height: "100%"
+        height: "100%",
+        overflow: "hidden"
     },
     conTop:
     {
@@ -612,6 +614,7 @@ const styles : { [ key: string ]: CSSProperties } =
         rowGap: gConTopSideRowGap,
         justifyContent: "center",
         alignItems: "center",
+        overflowY: "scroll"
     },
     conTopMid:
     {
@@ -650,8 +653,9 @@ const styles : { [ key: string ]: CSSProperties } =
         borderLeft: "2px solid",
         borderBottom: "2px solid",
         borderBottomLeftRadius: spacingN(),
-        rowGap: spacingN(),
-        justifyContent: "end"
+        rowGap: spacingN(-1),
+        // marginTop: "auto",
+        justifyContent: "end",
     },
     conNextBlocks:
     {
@@ -660,6 +664,7 @@ const styles : { [ key: string ]: CSSProperties } =
     conHoldBlock:
     {
         rowGap: spacingN(-2),
+        alignItems: "center"
     },
     conMenuControls:
     {

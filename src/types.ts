@@ -48,6 +48,7 @@ type GameButtons = {
     anticlockwise: GameButtonProps;
     rotate180: GameButtonProps;
     hold: GameButtonProps;
+    swapHoldWithNext : GameButtonProps;
 };
 
 const defaultGameButtonProps = { onPress: () => console.log(""), symbol: new GridSymbol() }

@@ -125,12 +125,13 @@ const gControlDescriptions : PropsControlDescription[] =
         {
             prTitle: "Move Down (Soft Drop)",
             prDescription: "Increases the speed of the falling block. Press again to return to the normal speed.",
-            prSymbolScreen: new GridSymbol("down"),
+            prTextScreen: "Press the game grid.",
+            // prSymbolScreen: new GridSymbol("down"),
             prKeyImgSrcKeyboard: imgKeyArrowDown,
         },
         {
             prTitle: "Move Down (Hard Drop)",
-            prDescription: "Instantly moves the falling block as far down as it can go.",
+            prDescription: "Instantly moves the falling block as far down as it can go in its current orientation.",
             prSymbolScreen: new GridSymbol("downMax"),
             prKeyImgSrcKeyboard: imgKeyArrowUp
         },

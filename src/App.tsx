@@ -13,6 +13,7 @@ import SignUp from './pages/SignUp/SignUp';
 import Settings from './pages/settings/Settings';
 import About from './pages/about/About';
 import Controls from './pages/controls/Controls';
+import SettingsThemes from './pages/settings_theme/SettingsTheme';
 import GameSettings from './pages/game_settings/GameSettings';
 import GuestUsername from './pages/guest_username/GuestUsername';
 import Game from './pages/game/Game';
@@ -68,6 +69,17 @@ function App()
                     />
 
                     <Route
+                        path = { "/soundEffects" }
+                        element = { <SoundEffects /> }
+                    />
+
+                    <Route
+                        path = { "/settingsThemes" }
+                        element = { <SettingsThemes /> }
+                    />
+
+
+                    <Route
                         path = { "/gameSettings" }
                         element = { <GameSettings /> }
                     />
@@ -80,11 +92,6 @@ function App()
                     <Route
                         path = { "/game" }
                         element = { <Game /> }
-                    />
-
-                    <Route
-                        path = { "/soundEffects" }
-                        element = { <SoundEffects /> }
                     />
 
                     {/* 

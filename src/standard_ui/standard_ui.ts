@@ -27,6 +27,7 @@ import TextStd from "./components/text_std/TextStd";
 import LoadAreaStd from "./components/loading_area_std/LoadAreaStd";
 
 import { PopUpProps, NavButtonProps, IconFunc } from "./types";
+import { Theme } from "./themes/theme_types";
 
 
 // Export everything in the package.
@@ -62,5 +63,5 @@ export {
 
 export type { 
     StylesPopUpStd, StylesButtonStd, StylesHeaderStd, StyleTextInputStd, StylesPageContainerStd, StylesNavBarStd,
-    IconFunc, PopUpProps, NavButtonProps, StylesComboBoxStd, StylesSliderStd
+    IconFunc, PopUpProps, NavButtonProps, StylesComboBoxStd, StylesSliderStd, Theme
 };
