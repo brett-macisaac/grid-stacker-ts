@@ -188,7 +188,7 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
         () =>
         {
             return [
-                prGameButtons.anticlockwise, prGameButtons.rotate180, prGameButtons.swapHoldWithNext, prGameButtons.downMax, prGameButtons.clockwise
+                prGameButtons.anticlockwise, prGameButtons.swapHoldWithNext, prGameButtons.rotate180, prGameButtons.downMax, prGameButtons.clockwise
                 // prGameButtons.anticlockwise, prGameButtons.down, prGameButtons.rotate180, prGameButtons.downMax, prGameButtons.clockwise
             ];
         },
