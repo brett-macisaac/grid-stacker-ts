@@ -184,7 +184,7 @@ class Grid
         }
         else
         {
-            lCell.borderColour = pColour;//`${pColour}55`;
+            lCell.borderColour = pColour; //`${pColour}`;
         }
     }
 

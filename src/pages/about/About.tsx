@@ -170,9 +170,11 @@ in over 16,000 unique game modes.`
                 />
                 <TextStd 
                     prText = {
-`With most games in this genre, the blocks spawn above the grid, out-of-sight from the user, and proceed to 'fall' onto 
+`With most games in this genre the blocks spawn above the grid, out-of-sight from the user, and proceed to 'fall' onto 
 the grid. With Grid Stacker, the blocks spawn directly onto the grid within the top-three rows if there's available 
-space. This alternative system makes playing on smaller grid sizes significantly more manageable.`
+space. This alternative system makes playing on smaller grid sizes significantly more manageable. If the next block is 
+able to spawn, its outline is displayed on the grid to show the user where to expect it and to notify them that the next
+block can in fact spawn.`
                     }
                     prStyle = { styles.paragraph }
                 />
@@ -196,15 +198,43 @@ games in the genre. The rotation system has been modified slightly to make playi
                 <TextStd 
                     prText = {
 `As with other games in the genre, points are scored by forming full horizontal lines, which are then 'cleared'. The 
-main difference with Grid Stacker is the score multiplier system.`
+main difference with Grid Stacker is the score multiplier system. `
                     }
                     prStyle = { styles.paragraph }
                 />
                 <TextStd 
                     prText = {
-`When you form more than one line at a time, your multiplier increases; however, if you only form a single line, your 
-multiplier decreases significantly. This incentises strategic block placement not only to survive, but to continually 
-increase your score by ever-increasing amoounts.`
+`As with other games, your multiplier will increase gradually as you clear more lines. However, the primary way you can
+increase your multiplier is by executing multi-line clears, which is where you clear more than 1 line simultaneously.`
+                    }
+                    prStyle = { styles.paragraph }
+                />
+                <TextStd 
+                    prText = {
+`Executing a multi-line clear will increase your multiplier; however, if you only clear a single line, your multiplier 
+decreases significantly. This incentises strategic block placement not only to survive, but to continually increase your
+score by ever-increasing amounts.`
+                    }
+                    prStyle = { styles.paragraph }
+                />
+                <TextStd 
+                    prText = {
+`The more multi-line clears you perform consecutively, the more your multiplier will increase with each successive 
+multi-line clear. However, there are different types of multi-line clears: you can clear either 2, 3, or 4 lines at a 
+time, which can be referred to as 2-line clears, 3-line clears, and 4-line clears, respectively.`
+                    }
+                    prStyle = { styles.paragraph }
+                />
+                <TextStd 
+                    prText = {
+`The game keeps track of your 2-line, 3-line, and 4-line clear streaks. For example, if you perform a 2-line clear, you now 
+have a 2-line streak of 1. If you then do a 3-line clear, your 2-line streak becomes two (because 3 is greater than 2) 
+and your 3-line streak becomes one. Likewise, if you then do a 4-line clear, your 2-line streak becomes three, your 
+3-line streak becomes two, and your 4-line streak becomes one. If you then do another 3-line clear, your 2-line and 
+3-line streaks will both increase by one, but your 4-line streak will get reset to 0, because you've broken the streak. 
+If you then do a 1-line clear, you will likewise lose both your 2-line and 3-line streaks, because a 1-line clear is 
+lower than both. These three multi-line streaks determine how much your multiplier increases when you perform your next 
+multi-line clear.`
                     }
                     prStyle = { styles.paragraph }
                 />

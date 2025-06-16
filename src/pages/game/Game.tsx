@@ -297,14 +297,17 @@ function Game()
                     // Calculate the score from the line clears (don't multiply by level, as the multiplier takes care of this).
                     let lScoreFromLineClears = gScoresLineClears[lNumFullLines - 1]; // lLevel
 
+                    updateLineClearStreaks(lNumFullLines);
+
                     // If the user cleared multiple lines, increase the multiplier.
                     if (lNumFullLines > 1)
                     {
                         // Whether it's a 'perfect' clear, meaning that the grid is empty after the lines are cleared.
                         const lIsPerfectClear = rfGrid.current.isEmptyAfterClear();
 
-                        // If it's a perfect clear, increment by the number of lines cleared; otherwise, increment by 1.
-                        rfMultiplier.current += lIsPerfectClear ? lNumFullLines : 1;
+                        const lLineClearStreakTotal : number = Math.pow(gLineClearStreakAbove2 + 1, 1) + Math.pow(gLineClearStreakAbove3 + 1, 2) + Math.pow(gLineClearStreakAbove4 + 1, 3);
+
+                        rfMultiplier.current += lIsPerfectClear ? 2 * lLineClearStreakTotal : lLineClearStreakTotal;
                     }
                     else
                     {
@@ -917,6 +920,8 @@ function Game()
     const lResetGame = useCallback(
         () =>
         {
+            updateLineClearStreaks();
+
             rfGrid.current.reset();
             resetGameInfo();
             resetTallies();
@@ -1190,7 +1195,45 @@ const gLengthLevel = 4;
 * At level x, after clearing n lines, the player's score increases by gScoresLineClears[n - 1] * x; if the player 
   executed a 'perfect clear' whereby the grid is completely empty, this value is doubled.
 */
-const gScoresLineClears = [ 50, 200, 500, 1500 ] //[ 40, 100, 300, 1200 ];
+const gScoresLineClears = [ 50, 200, 500, 1500 ]; // [ 40, 100, 300, 1200 ];
+
+/*
+* The user's 'line clear streaks'. gLineClearStreakAbove2 is the number of times the user has cleared 2 or more lines 
+  without clearing only 1 line. Similarly, gLineClearStreakAbove3 is the number of times the user has cleared 3 or more
+  lines without clearing 1 or 2 lines. Finally, gLineClearStreakAbove4 is the number of times the has cleared 4 lines 
+  without clearing 1, 2, or 3 lines.
+*/
+let gLineClearStreakAbove2 : number = 0;
+let gLineClearStreakAbove3 : number = 0;
+let gLineClearStreakAbove4 : number = 0;
+
+function updateLineClearStreaks(pNumLinesCleared : number = 1)
+{
+    if (pNumLinesCleared < 2)
+    {
+        gLineClearStreakAbove2 = 0;
+        gLineClearStreakAbove3 = 0;
+        gLineClearStreakAbove4 = 0;
+    }
+    else if (pNumLinesCleared == 2)
+    {
+        ++gLineClearStreakAbove2;
+        gLineClearStreakAbove3 = 0;
+        gLineClearStreakAbove4 = 0;
+    }
+    else if (pNumLinesCleared == 3)
+    {
+        ++gLineClearStreakAbove2;
+        ++gLineClearStreakAbove3;
+        gLineClearStreakAbove4 = 0;
+    }
+    else //if (pNumLinesCleared == 4)
+    {
+        ++gLineClearStreakAbove2;
+        ++gLineClearStreakAbove3;
+        ++gLineClearStreakAbove4;
+    }
+}
 
 // A flag that, when true, indicates that the block should be 'soft dropped'.
 let gSoftDrop = false;
