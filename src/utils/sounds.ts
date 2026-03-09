@@ -129,7 +129,7 @@ const blockSoundsArcade : BlockSounds = {
     }
 };
 
-const blockSoundsDefault : BlockSounds = blockSoundsTypewriter;
+const blockSoundsDefault : BlockSounds = blockSoundsMechKeyboard;
 
 const blockSoundsPredefined : BlockSounds[] = [
     blockSoundsBeep,

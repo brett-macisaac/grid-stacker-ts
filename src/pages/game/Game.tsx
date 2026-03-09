@@ -442,7 +442,7 @@ function Game()
 
             let lSoundObj = new Audio(lBlockSoundBox.getSound(pAction));
 
-            lSoundObj.volume = 0.03;
+            lSoundObj.volume = 0.15;
 
             await lSoundObj.play();
         },
