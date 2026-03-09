@@ -1,6 +1,6 @@
-import React, { useMemo, memo, CSSProperties } from "react";
+import { useMemo, memo, CSSProperties } from "react";
 
-import { TextStd, useTheme } from '../../standard_ui/standard_ui';
+import { TextStd, useTheme } from '../../standard_ui';
 
 interface StyleTableStd
 {
@@ -31,46 +31,12 @@ interface PropsTableStd
     prStyle?: StyleTableStd;
 };
 
-/*
-* A standard table component.
-
-* Props:
-    > prRowHeader: the header row (an array of strings).
-    > prRowsContent: the content rows (an array of an array of strings). Each row should be have the same length as prRowHeader.
-    > prData: an object which contains all of the table's data and the order of the columns.
-        e.g. 
-        {
-            orderColumns: [ "colA", "colC", "colB" ],
-            header: { colA: "A", colC: "C", colB: "B" },
-            content:
-            {
-                orderRows: [ "rowA", "rowC", "rowB" ],
-                rows:
-                {
-                    rowA: { colA: "1", colC: "2", colB: "3" }
-                    rowC: { colA: "2", colC: "3", colB: "4" }
-                    rowB: { colA: "5", colC: "6", colB: "7" }
-                }
-            }
-        }
-*/
-
 const TableStd = memo(
 
     function TableStd({ prData, prBorders = [ true, true, true, true ], prBorderColour, prBorderSize = 2, prBorderRadiusOuter = 0, prStyle } : PropsTableStd)
     {
         // Acquire global theme.
         const { theme } = useTheme();
-
-        // The header row.
-        // let lRowHeader : string[] = [];
-        // if (prData)
-        // {
-        //     for (const lColumn of prData.orderColumns)
-        //     {
-        //         lRowHeader.push(prData.header.get(lColumn) ?? "-");
-        //     }
-        // }
 
         const lRowHeader = useMemo<string[]>(
             () =>
@@ -113,19 +79,6 @@ const TableStd = memo(
             [ prData ]
         );
 
-        // The content rows.
-        // const lRows : string[][] = [];
-        // for (const lRow of prData.content.orderRows)
-        // {
-        //     const lRowTemp : string[] = [];
-        //     for (const lColumn of prData.orderColumns)
-        //     {
-        //         lRowTemp.push(prData.content.rows.get(lRow)?.get(lColumn) || "-");
-        //     }
-
-        //     lRows.push(lRowTemp);
-        // }
-
         const lStyleCon = useMemo<CSSProperties>(
             () =>
             {
@@ -153,9 +106,6 @@ const TableStd = memo(
                     ...styles.column, 
                     rowGap: prBorderSize,
                     ...prStyle?.column, 
-                    // borderRadius: 10,
-                    // overflow: "hidden"
-                    //borderRight: (pIndexCol == lNumColumns - 1) ? lBorder : undefined 
                 }
             },
             [ prBorderSize, prStyle ]
@@ -313,13 +263,18 @@ const styles : { [key : string]: CSSProperties }=
     }
 };
 
-/*
-* Returns the height of a table that corresponds to the given parameters.
+/**
+* Calculates the height of a table that corresponds to the given parameters.
 
 * Parameters:
-    >
+    * @param pNumRows The number of rows.
+    * @param pSizeText The font size of the text.
+    * @param pBorders Booleans that determine which outer border is displayed.
+    * @param pBorderSize The size of the borders (inner and outer).
+    * @param pPaddingCell The padding applied to each cell.
+    * @returns The height of a table that corresponds to the given parameters.
 */
-function defaultTableHeight(pNumRows : number, pSizeText : number, pBorders : boolean[] = [true, true, true, true ], 
+function defaultTableHeight(pNumRows : number, pSizeText : number, pBorders : boolean[] = [ true, true, true, true ], 
                             pBorderSize : number = 2, pPaddingCell : number = 5)
 {
     let lHeightPadding = pNumRows * 2 * pPaddingCell;

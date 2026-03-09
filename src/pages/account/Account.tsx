@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd, IconFunc } from "../../standard_ui/standard_ui";
-import Container, { StylesContainer } from '../../components/container/Container';
-import ButtonNextPage from '../../components/button_next_page/ButtonNextPage';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { SettingsIcon, Back, HeaderLogo } from "../nav_buttons";
+import { spacingN, ButtonStd, PageContainerStd, NavButtonProps, useTheme } from "@/standard_ui/standard_ui";
+import ButtonNextPage from '@/components/button_next_page/ButtonNextPage';
+import { usePrefs } from '@/contexts/PreferenceContext';
+import { SettingsIcon, Back, HeaderLogo } from "@/pages/nav_buttons";
 
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import CheckBoxStd, { StylesCheckBoxStd } from '../../components/check_box/CheckBoxStd';
-import { fontSizeN, spacingN } from '../../utils/utils_ui';
-import { stylePageTitle, styleBtnNextPage, stylePageConGeneral, styleButtonGeneral } from '../../utils/styles';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import { stylePageTitle, stylePageConGeneral, styleButtonGeneral } from '@/utils/styles';
 
-import { useUser } from '../../contexts/UserContext';
+import { useUser } from '@/contexts/UserContext';
 
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];

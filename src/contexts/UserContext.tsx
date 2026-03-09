@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
-import utils from '../standard_ui/utils.ts';
-import { User } from "../types";
-import ApiRequestor from '../ApiRequestor';
+import utils from '@/standard_ui/utils';
+import { User, isUser } from "@/types";
+import ApiRequestor from '@/ApiRequestor';
 
 interface ValueUserContext
 { 
@@ -29,10 +29,12 @@ interface PropsUserProvider
 function UserProvider({ children } : PropsUserProvider) 
 {
     /* The name of the current theme. */
-    const [ stUser, setUser ] = useState<User | undefined>(utils.getFromLocalStorage(gLclStrgKeyUser) ?? undefined);
+    const [ stUser, setUser ] = useState<User | undefined>(
+        utils.getFromLocalStorageTyped<User>(gLclStrgKeyUser, isUser) ?? undefined
+    );
 
     /**
-    * Swithes user.
+    * Switches user.
     */
     const update = useCallback(
         (pUser?: User) : void =>

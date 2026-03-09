@@ -1,6 +1,5 @@
-import { utils } from "../standard_ui/standard_ui";
-import { TableData } from "../components/table_std/TableStd";
-import { GameStats } from "../types";
+import { utils, TableData } from "@/standard_ui/standard_ui";
+import { GameStats } from "@/types";
 
 function getTableDataHighScores(pGameStatsGlobal?: GameStats, pGameStatsLocal?: GameStats) : TableData
 {

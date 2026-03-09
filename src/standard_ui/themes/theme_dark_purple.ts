@@ -83,18 +83,19 @@ const darkPurple : Theme =
 
         container:
         {
-            background: "transparent",
+            background: "#4F2F69",
+            header: "#170627",
             border: "#DDB8FC",
+            font: "#FFFFFF"
         },
 
         countLabel:
         {
-            background: "#170627",
+            backgroundTitle: "#170627",
+            backgroundCount: "#170627",
+            fontTitle: "#FFFFFF",
+            fontCount: "#FFFFFF",
             border: "#DDB8FC",
-            font: "#ffffff",
-            fontValue: "#ffffff",
-            backgroundValue: "#170627",
-            borderLeftColorValue: "#DDB8FC",
         },
 
         textInput:
@@ -200,25 +201,6 @@ const darkPurple : Theme =
         grid:
         {
             background: "#4F2F69"
-        },
-
-        container:
-        {
-            background: "#4F2F69",
-            header: "#170627",
-            border: "#DDB8FC",
-            font: "#FFFFFF"
-        },
-
-        countLabel:
-        {
-            backgroundTitle: "#170627",
-            backgroundCount: "#170627",
-            fontTitle: "#FFFFFF",
-            fontCount: "#FFFFFF",
-            border: "#DDB8FC",
-            // borderTitle: "#FFFFFF",
-            // borderCount: "#FFFFFF"
         },
 
         game: 

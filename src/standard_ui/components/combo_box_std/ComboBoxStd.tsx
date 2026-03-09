@@ -16,9 +16,15 @@ type StylesComboBoxStd = {
     text?: React.CSSProperties,
 }
 
-interface PropsComboBoxStd
+interface ItemCombBoxStd<T> {
+    text: string,
+    value: T,
+    note?: string
+};
+
+interface PropsComboBoxStd<T>
 {
-    prItems: string[];
+    prItems: ItemCombBoxStd<T>[];
     prTextPlaceholder?: string;
     prIndexSelected?: number;
     prOnPress: (pIndexItem : number) => void;
@@ -48,10 +54,10 @@ interface PropsComboBoxStd
         * borderColor: the colour of the button's borders.
         * fontColor: the colour of the button's text.
 */
-function ComboBoxStd({ prItems, prOnPress, prTextPlaceholder = "Select", prIndexSelected = -1, prDirection = "D", 
+function ComboBoxStd<T>({ prItems, prOnPress, prTextPlaceholder = "Select", prIndexSelected = -1, prDirection = "D", 
                        prLength = 200, prMaxLengthItemBox = 200, 
                        prIconSize = 35, prStyles, prHideScrollBar = true, prIsActive = true, 
-                       prUseOverlayInactive = false }: PropsComboBoxStd)
+                       prUseOverlayInactive = false }: PropsComboBoxStd<T>)
 {
     const { theme } = useTheme();
 
@@ -144,7 +150,8 @@ function ComboBoxStd({ prItems, prOnPress, prTextPlaceholder = "Select", prIndex
                 border: `1px solid ${prIsActive ? theme.std.comboBox.border : theme.std.comboBox.borderInactive}`, 
                 color: theme.std.comboBox.font,
                 backgroundColor: prIsActive || prUseOverlayInactive ? theme.std.comboBox.background : theme.std.comboBox.backgroundInactive,
-                alignSelf: "center"
+                alignSelf: "center",
+                rowGap: 10
                 // overflow: "hidden"
             };
 
@@ -193,6 +200,29 @@ function ComboBoxStd({ prItems, prOnPress, prTextPlaceholder = "Select", prIndex
             };
         },
         [ prStyles, theme, prDirection, prMaxLengthItemBox, prLength, lIsVertical ]
+    );
+
+    const lStyleNote = useMemo<CSSProperties>(
+        () =>
+        {
+            return {
+                fontStyle: "italic",
+                fontSize: 11,
+                color: theme.std.comboBox.font,
+                whiteSpace: "normal",
+                overflowWrap: "anywhere",
+                wordBreak: "break-word",
+                width: "100%",
+                maxWidth: "100%",
+                position: "absolute",
+                top: "100%",
+                marginTop: 5,
+                marginLeft: 5,
+                marginRight: 5,
+                left: 0,
+            };
+        },
+        [ theme ]
     );
 
     const lStyleConText = useMemo<CSSProperties>(
@@ -259,7 +289,7 @@ function ComboBoxStd({ prItems, prOnPress, prTextPlaceholder = "Select", prIndex
             {/* The text displayed in the main container (either placeholder or selected item). */}
             <TextStd 
                 prText = { 
-                    (lNoSelection) ? prTextPlaceholder : prItems[prIndexSelected] 
+                    (lNoSelection) ? prTextPlaceholder : prItems[prIndexSelected].text
                 } 
                 prStyle = { lStyleConText }
                 prIsBold
@@ -289,7 +319,7 @@ function ComboBoxStd({ prItems, prOnPress, prTextPlaceholder = "Select", prIndex
                                     return (
                                         <TextStd 
                                             key = { index }
-                                            prText = { item } 
+                                            prText = { item.text } 
                                             prStyle = { lStyleConItemsText }
                                             prClassName = { lIsVertical ? "cmbBoxItemVertical" : "cmbBoxItemHorizontal" }
                                             prIsVertical = { !lIsVertical }
@@ -312,7 +342,15 @@ function ComboBoxStd({ prItems, prOnPress, prTextPlaceholder = "Select", prIndex
                 )
             }
 
-            <div style = { lStyleOverlayInactive }></div>
+            {
+                prIndexSelected >= 0 && prIndexSelected < prItems.length && prItems[prIndexSelected].note && lIsVertical && (
+                    <TextStd
+                        prText = { prItems[prIndexSelected].note } 
+                        prStyle = { lStyleNote }
+                        prClassName = "hideScrollBar"
+                    />
+                )
+            }
 
         </div>
     );
@@ -362,4 +400,4 @@ function ComboBoxArrow({ prDirection, prShowItems, prIconSize, prColour }: Props
 
 export default ComboBoxStd;
 
-export type { StylesComboBoxStd };
+export type { StylesComboBoxStd, ItemCombBoxStd };

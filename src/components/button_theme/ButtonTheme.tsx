@@ -1,6 +1,6 @@
 import { CSSProperties, memo, useCallback, useMemo } from 'react';
 
-import { Theme } from '../../standard_ui/themes/theme_types';
+import { Theme } from '@/standard_ui/themes/theme_types';
 
 interface PropsButtonTheme
 {

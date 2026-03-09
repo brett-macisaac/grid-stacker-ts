@@ -74,16 +74,17 @@ type ThemeContainerStd =
 {
     background: string;
     border: string;
+    header: string;
+    font: string;
 }
 
 type ThemeCountLabelStd =
 {
-    background: string;
+    backgroundTitle: string;
+    backgroundCount: string;
+    fontTitle: string;
+    fontCount: string;
     border: string;
-    font: string;
-    fontValue: string;
-    backgroundValue: string;
-    borderLeftColorValue: string;
 }
 
 type ThemeTextInputStd =
@@ -189,25 +190,6 @@ type ThemePageContainerStd =
     background: string;
 }
 
-type ThemeContainer =
-{
-    background: string;
-    border: string;
-    header: string;
-    font: string;
-}
-
-type ThemeCountLabel =
-{
-    backgroundTitle: string;
-    backgroundCount: string;
-    fontTitle: string;
-    fontCount: string;
-    border: string;
-    // borderTitle: string;
-    // borderCount: string;
-}
-
 type ThemeGridCell =
 {
     empty: string; 
@@ -272,10 +254,6 @@ type Theme =
         gridCell: ThemeGridCell,
 
         grid: ThemeGrid,
-
-        container: ThemeContainer
-
-        countLabel: ThemeCountLabel,
 
         game: ThemeGame
     }

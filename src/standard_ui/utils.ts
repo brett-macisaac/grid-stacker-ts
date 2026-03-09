@@ -9,12 +9,7 @@ import { Dimensions } from "./types";
 */
 function sleepFor(pSleepDuration : number) : Promise<unknown> | undefined
 {
-    if (typeof pSleepDuration !== 'number')
-    {
-        console.log("aSleepDuration must be a number, not " + typeof pSleepDuration);
-        return;
-    } 
-    else if (pSleepDuration < 0)
+    if (pSleepDuration < 0)
     {
         console.log("aSleepDuration can't be negative.");
         return;
@@ -146,8 +141,11 @@ function randomiseArray(pArray : unknown[]) : void
 
 * @returns Whether the operation succeeded.
 */
-function setInLocalStorage<T>(pKey : string, pValue : T) : boolean
+function setInLocalStorage(pKey : string, pValue : unknown) : boolean
 {
+    if (!pValue)
+        return false;
+
     try
     {
         if (pValue instanceof Map)
@@ -177,7 +175,7 @@ function setInLocalStorage<T>(pKey : string, pValue : T) : boolean
 
 * @returns The data (or undefined if it either couldn't be found or an error occurred when parsing it).
 */
-function getFromLocalStorage<T>(pKey : string) : T | undefined
+function getFromLocalStorage(pKey : string) : unknown
 {
     if (!localStorage.hasOwnProperty(pKey))
     {
@@ -189,14 +187,31 @@ function getFromLocalStorage<T>(pKey : string) : T | undefined
 
     try
     {
-        const lValueParsed : T = JSON.parse(lValueString);
-
-        return lValueParsed;
+        return JSON.parse(lValueString);
     }
     catch (e)
     {
-        return undefined;
+        return lValueString;
     }
+}
+
+/**
+* Retrieves data from local storage and validates it with a type guard.
+*
+* @param pKey The key associated with the data.
+* @param pIsType A type guard that validates the parsed data.
+* @param pFallback Optional fallback to return when validation fails.
+*
+* @returns The typed data (or fallback/undefined if missing or invalid).
+*/
+function getFromLocalStorageTyped<T>(pKey : string, pIsType : (pValue : unknown) => pValue is T, pFallback?: T) : T | undefined
+{
+    const lValue : unknown = getFromLocalStorage(pKey);
+
+    if (pIsType(lValue))
+        return lValue;
+
+    return pFallback;
 }
 
 /*
@@ -414,6 +429,7 @@ const utils =
     randomiseArray: randomiseArray,
     setInLocalStorage: setInLocalStorage,
     getFromLocalStorage: getFromLocalStorage,
+    getFromLocalStorageTyped: getFromLocalStorageTyped,
     debounce: debounce,
     padEndArray: padEndArray,
     getPercentVal: getPercentVal,

@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, CSSProperties } from 'react';
+import { useMemo, useCallback, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Brightness4 from '@mui/icons-material/Brightness4';
 import SportsEsports from '@mui/icons-material/SportsEsports';
 import Info from '@mui/icons-material/Info'; 
 import VolumeUp from '@mui/icons-material/VolumeUp';
+import IconGamepad from '@mui/icons-material/Gamepad';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd, IconFunc } from "../../standard_ui/standard_ui";
-import Container, { StylesContainer } from '../../components/container/Container';
-import ButtonNextPage from '../../components/button_next_page/ButtonNextPage';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo } from "../nav_buttons";
+import { spacingN, PageContainerStd, NavButtonProps, useTheme, IconFunc } from "@/standard_ui/standard_ui";
+// import Container, { StylesContainer } from '../../components/container/Container';
+import ButtonNextPage from '@/components/button_next_page/ButtonNextPage';
+import { usePrefs } from '@/contexts/PreferenceContext';
+import { Account, Back, HeaderLogo } from "@/pages/nav_buttons";
 
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import CheckBoxStd, { StylesCheckBoxStd } from '../../components/check_box/CheckBoxStd';
-import { spacingN } from '../../utils/utils_ui';
-import { stylePageTitle, styleBtnNextPage, stylePageConGeneral } from '../../utils/styles';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import { stylePageTitle, styleBtnNextPage, stylePageConGeneral } from '@/utils/styles';
 
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 const gHeaderButtonsRight : NavButtonProps[] = [ Account ];
@@ -28,16 +27,6 @@ function Settings()
     const cxPrefs = usePrefs();
 
     const navigate = useNavigate();
-
-    const lStyleChkSoundEffects = useMemo<StylesCheckBoxStd>(
-        () =>
-        {
-            return {
-                con: { padding: spacingN(-1), width: "100%", maxWidth: 500 }
-            }
-        },
-        []
-    );
 
     const lStyleTitle = useMemo<CSSProperties>(
         () =>
@@ -63,8 +52,8 @@ function Settings()
         () => { navigate("/soundEffects"); }, []
     );
 
-    const lOnPressUpdateSFX = useCallback(
-        () => { cxPrefs.update(undefined, undefined, undefined, undefined, !cxPrefs.prefs.soundOn) }, [ cxPrefs ]
+    const lOnPressBlockDirection = useCallback(
+        () => { navigate("/blockDirection"); }, []
     );
 
     return ( 
@@ -113,6 +102,14 @@ function Settings()
                 prOnPress = { lOnPressSound }
             />
 
+            <ButtonNextPage 
+                prText = "Gameplay" 
+                // prSizeText = { 1 }
+                prIsBold prStyles = { styleBtnNextPage }
+                prIcon = { iconGameplay }
+                prOnPress = { lOnPressBlockDirection }
+            />
+
         </PageContainerStd>
     );
 }
@@ -155,6 +152,11 @@ const iconControls : IconFunc = (pSize : number, pColour : string) =>
 const iconSoundEffects : IconFunc = (pSize : number, pColour : string) =>
 {
     return <VolumeUp sx = {{ fill: pColour, fontSize: pSize }} /> 
+};
+
+const iconGameplay : IconFunc = (pSize : number, pColour : string) =>
+{
+    return <IconGamepad sx = {{ fill: pColour, fontSize: pSize }} /> 
 };
 
 export default Settings;

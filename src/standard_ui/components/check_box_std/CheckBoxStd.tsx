@@ -1,9 +1,9 @@
-import React, { useContext, CSSProperties, useMemo, memo } from "react";
+import { CSSProperties, useMemo, memo } from "react";
 
 import Done from '@mui/icons-material/Done';
 
-import { TextStd, useTheme } from '../../standard_ui/standard_ui';
-import { fontSizeN, spacingN } from '../../utils/utils_ui';
+import { TextStd, useTheme } from '../../standard_ui';
+import { fontSizeN, spacingN } from '../../utils_ui';
 import { SxProps } from "@mui/material/styles";
 
 type StylesCheckBoxStd =

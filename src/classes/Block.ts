@@ -1,6 +1,6 @@
-import Vector2D from "./Vector2D";
-import Grid from "./Grid";
-import utils from "../standard_ui/utils";
+import Vector2D from "@/classes/Vector2D";
+import Grid from "@/classes/Grid";
+import utils from "@/standard_ui/utils";
 
 /**
 * The different block types.
@@ -69,7 +69,6 @@ class Block
     // );
 
     // An object whose values represent each of the block colours (darker than originals).
-    // Maybe change to minimise chance of lawsuit.
     static sColoursMap : Map<BlockType, string> = new Map([
         [ "I", '#099797' ],
         [ "J", '#4444FA' ],
@@ -643,7 +642,9 @@ class Block
     static stringToBlockType(pStr : string) : BlockType
     {
         if (!pStr || !Block.sTypeSet.has(pStr[0]))
+        {
             return "I";
+        }
 
         return pStr as BlockType;
     }
@@ -663,7 +664,7 @@ class Block
     {
         const lBlockTypes = !pBlocks ? Block.sTypeArray : Block.stringToBlockTypes(pBlocks);
 
-        return lBlockTypes[utils.getRandomInt(0, Block.sTypeArray.length - 1)];
+        return lBlockTypes[utils.getRandomInt(0, lBlockTypes.length - 1)];
     }
 
     /**

@@ -107,7 +107,10 @@ function ThemeProvider({ children } : PropsThemeProvider)
     useEffect(
         () =>
         {
-            const lThemeNameStored : string | undefined = utils.getFromLocalStorage(gLclStrgKeyThemeName);
+            const lThemeNameStored : string | undefined = utils.getFromLocalStorageTyped<string>(
+                gLclStrgKeyThemeName, 
+                (pValue : unknown) => typeof pValue === "string"
+            );
 
             if (lThemeNameStored)
             {

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-import { User, MetaStats, GameStats, isGameStats } from "./types";
+import { User, MetaStats, GameStats, isGameStats } from "@/types";
 
 import { z } from "zod";
 

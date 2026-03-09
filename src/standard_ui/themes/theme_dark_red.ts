@@ -83,18 +83,19 @@ const darkRed : Theme =
 
         container:
         {
-            background: "transparent",
+            background: "#692F2F",
+            header: "#270606",
             border: "#FCB8B8",
+            font: "#FFFFFF"
         },
 
         countLabel:
         {
-            background: "#270606",
+            backgroundTitle: "#270606",
+            backgroundCount: "#270606",
+            fontTitle: "#FFFFFF",
+            fontCount: "#FFFFFF",
             border: "#FCB8B8",
-            font: "#ffffff",
-            fontValue: "#ffffff",
-            backgroundValue: "#270606",
-            borderLeftColorValue: "#FCB8B8",
         },
 
         textInput:
@@ -200,25 +201,6 @@ const darkRed : Theme =
         grid:
         {
             background: "#692F2F"
-        },
-
-        container:
-        {
-            background: "#692F2F",
-            header: "#270606",
-            border: "#FCB8B8",
-            font: "#FFFFFF"
-        },
-
-        countLabel:
-        {
-            backgroundTitle: "#270606",
-            backgroundCount: "#270606",
-            fontTitle: "#FFFFFF",
-            fontCount: "#FFFFFF",
-            border: "#FCB8B8",
-            // borderTitle: "#FFFFFF",
-            // borderCount: "#FFFFFF"
         },
 
         game: 

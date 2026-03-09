@@ -1,5 +1,5 @@
-import Grid from "./Grid";
-import Block, { BlockType } from "./Block";
+import Grid from "@/classes/Grid";
+import Block, { BlockType } from "@/classes/Block";
 
 /**
 * A class that encapsulates a Grid that has a symbol drawn onto it (e.g. letters, numbers, etc). 

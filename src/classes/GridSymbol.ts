@@ -1,7 +1,7 @@
-import Grid from "./Grid";
-import Block, { BlockType } from "./Block";
+import Grid from "@/classes/Grid";
+import Block, { BlockType } from "@/classes/Block";
 
-type GridSymbolName = "left" | "right" | "leftMax" | "rightMax" | "down" | "downMax" | "clockwise" | "anticlockwise" | 
+type GridSymbolName = "left" | "right" | "leftMax" | "rightMax" | "up" | "down" | "downMax" | "clockwise" | "anticlockwise" | 
                       "rotate180" | "hold" | "swap";
 
 class GridSymbol
@@ -62,6 +62,18 @@ class GridSymbol
                     0, 0, 0, 1, 0, 1, 0,
                     0, 0, 1, 0, 1, 0, 0,
                     0, 1, 0, 1, 0, 0, 0,
+                ]
+            ],
+            [
+                'up', 
+                [ 
+                    0, 0, 0, 1, 0, 0, 0,
+                    0, 0, 1, 1, 1, 0, 0,
+                    0, 1, 1, 1, 1, 1, 0,
+                    1, 1, 1, 0, 1, 1, 1,
+                    1, 1, 0, 0, 0, 1, 1,
+                    1, 0, 0, 0, 0, 0, 1,
+                    0, 0, 0, 0, 0, 0, 0,
                 ]
             ],
             [

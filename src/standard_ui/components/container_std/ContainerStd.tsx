@@ -1,9 +1,9 @@
 
 import React, { useMemo, memo, CSSProperties } from 'react';
 
-import { TextStd, useTheme, LoadAreaStd } from '../../standard_ui/standard_ui';
+import { TextStd, useTheme, LoadAreaStd } from '../../standard_ui';
 
-type StylesContainer = {
+type StylesContainerStd = {
     conOuter?: React.CSSProperties;
     conInner?: React.CSSProperties;
     text?: React.CSSProperties;
@@ -12,7 +12,7 @@ type StylesContainer = {
 interface PropsContainer
 {
     prTitle?: string;
-    prStyles?: StylesContainer;
+    prStyles?: StylesContainerStd;
     prIsLoading?: boolean;
     children?: React.ReactNode; 
 }
@@ -33,9 +33,9 @@ interface PropsContainer
       correspond to a value of Header.buttonNames.
     > style: an optional styling object for the container of the content.
 */
-const Container = memo(
+const ContainerStd = memo(
 
-    function Container({ prTitle, prStyles, prIsLoading = false, children, } : PropsContainer)
+    function ContainerStd({ prTitle, prStyles, prIsLoading = false, children, } : PropsContainer)
     {
         // Acquire global theme.
         const { theme } = useTheme();
@@ -45,7 +45,7 @@ const Container = memo(
             {
                 return { 
                     ...styles.container, 
-                    backgroundColor: theme.cst.container.background, borderColor: theme.cst.container.border, 
+                    backgroundColor: theme.std.container.background, borderColor: theme.std.container.border, 
                     ...prStyles?.conOuter,
                     position: "relative",
                     //width: globalProps.widthCon,
@@ -67,8 +67,8 @@ const Container = memo(
             {
                 return { 
                     ...styles.title, 
-                    backgroundColor: theme.cst.container.header,
-                    color: theme.cst.container.font, 
+                    backgroundColor: theme.std.container.header,
+                    color: theme.std.container.font, 
                     ...prStyles?.text 
                 };
             },
@@ -133,7 +133,6 @@ const styles : { [key: string] : CSSProperties } =
     }
 };
 
+export default ContainerStd;
 
-export default Container;
-
-export type { StylesContainer };
+export type { StylesContainerStd };

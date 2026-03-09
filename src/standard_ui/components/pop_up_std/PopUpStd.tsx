@@ -4,7 +4,7 @@ import TextStd from '../text_std/TextStd';
 import ButtonStd, { StylesButtonStd } from '../button_std/ButtonStd';
 // import CheckBoxStd from '../check_box_std/CheckBoxStd';
 import utils from '../../utils';
-import { useTheme } from "../../standard_ui";
+import { useTheme, CheckBoxStd, StylesCheckBoxStd } from "../../standard_ui";
 import { PopUpButtonProps, PopUpProps } from '../../types';
 
 type StylesPopUpStd = {
@@ -13,6 +13,7 @@ type StylesPopUpStd = {
     title?: React.CSSProperties;
     message?: React.CSSProperties;
     button?: StylesButtonStd;
+    checkbox?: StylesCheckBoxStd;
 };
 
 interface PropsPopUpStd
@@ -25,29 +26,11 @@ interface PropsPopUpStd
     prId?: string;
     prShowNeverShowAgainCheckbox?: boolean;
     prStyles?: StylesPopUpStd
-    // prStylesCheckBox: ...
 }
 
-/*
+/**
 * A pop-up message component.
-
-* Props:
-    > prTitle: the pop-up's title.
-    > prMessage: the pop-up's message.
-    > prButtons: the pop-up's buttons. This should be an array of objects. Each object should have two properties: text
-      (string) and onPress (function). The button's 'text' is required, but 'onPress' is not.
-    > prRemovePopUp: the function that contains the logic to remove the pop-up.
-    > prDismissable: a boolean that, when true, indicates that the pop-up can be dismissed by clicking off it. This should
-      be false if you want the user to click one of the buttons.
-    > prId: the ID of the pop-up. This is an optional prop. If the pop-up's ID is on the 'blacklist', the pop-up is not 
-      displayed. An ID can be added to the blacklist by the user checking the 'never show again' checkbox, which can be 
-      displayed by setting showNeverShowAgainCheckbox to true.
-    > prShowNeverShowAgainCheckbox: whether to display the 'never show again' checkbox. The 'id' prop must also be set for
-      the checkbox to display.
-
-    TODO: add a prStyles prop, much like the CheckBox component. Include buttons, background, con, etc
 */
-
 const PopUpStd = memo(
 
     function PopUpStd({ prTitle, prMessage, prButtons = [ { text: "OK" } ], prFuncRemovePopUp, prDismissable = true, prId, 
@@ -56,7 +39,7 @@ const PopUpStd = memo(
         const { theme } = useTheme();
 
         // An array of IDs that correspond to pop-ups that can no longer be displayed.
-        const [ stBlackList, setBlackList ] = useState<string[]>([]);
+        const [ stBlackList, setBlackList ] = useState<string[]>(utils.getFromLocalStorageTyped<string[]>(gLclStrgKeyPopUpBlackList, (v): v is string[] => Array.isArray(v)) || []);
 
         // Whether the user pressed the checkbox to blacklist the pop-up message.
         const [ stBlackListedByCheckBox, setBlackListedByCheckBox ] = useState<boolean>(false);
@@ -64,27 +47,26 @@ const PopUpStd = memo(
         /*
         * Set the blacklist to the one stored locally on the user's device.
         */
-        useEffect(
-            () =>
-            {
-                // A function that retrieves the blacklist stored in local storage.
-                const getAndSetBlackList = async function() 
-                {
-                    const lBlackList : string[] | undefined = await utils.getFromLocalStorage(gLclStrgKeyPopUpBlackList);
+        // useEffect(
+        //     () =>
+        //     {
+        //         // A function that retrieves the blacklist stored in local storage.
+        //         const getAndSetBlackList = async function() 
+        //         {
+        //             const lBlackList : string[] = await utils.getFromLocalStorageTyped<string[]>(gLclStrgKeyPopUpBlackList, (v): v is string[] => Array.isArray(v)) || [];
 
-                    if (lBlackList)
-                        setBlackList(lBlackList);
-                };
+        //             setBlackList(lBlackList);
+        //         };
 
-                getAndSetBlackList();
-            },
-            []
-        );
+        //         getAndSetBlackList();
+        //     },
+        //     []
+        // );
 
         const handlePressNeverShowAgain = useCallback(
             () =>
             {
-                const lIsBlacklisted = prId && stBlackList.includes(prId);
+                const lIsBlacklisted : boolean = prId != undefined && prId != "" && stBlackList.includes(prId);
 
                 let lBlackListNew : string[];
 
@@ -130,13 +112,16 @@ const PopUpStd = memo(
         const lStyleConBackground = useMemo<React.CSSProperties>(
             () =>
             {
+                // const lDisplayPopUp : boolean = prId ? (!stBlackList.includes(prId) || stBlackListedByCheckBox) : true;
+
                 return {
                     ...styles.background,
                     backgroundColor: theme.std.popUp.backgroundTransparent,
-                    ...prStyles?.background
+                    ...prStyles?.background,
+                    // display: lDisplayPopUp ? "flex" : "none"
                 };
             },
-            [  theme ]
+            [  theme ] // stBlackListedByCheckBox, stBlackList, prId
         );
 
         const lStyleCon = useMemo<React.CSSProperties>(
@@ -198,7 +183,8 @@ const PopUpStd = memo(
         );
 
         // Don't display if the pop-up has been black-listed.
-        if (!(prId ? (!stBlackList.includes(prId) || stBlackListedByCheckBox) : true))
+        const lDisplayPopUp = prId ? (!stBlackList.includes(prId) || stBlackListedByCheckBox) : true;
+        if (!lDisplayPopUp)
         {
             return null;
         }
@@ -244,17 +230,16 @@ const PopUpStd = memo(
                         )
                     }
 
-                    {/* {
+                    {
                         (prShowNeverShowAgainCheckbox && prId) && (
                             <CheckBoxStd 
                                 prText = "Never Show Again"
                                 prIsChecked = { stBlackList.includes(prId) }
                                 prOnPress = { handlePressNeverShowAgain }
-                                prStyles = { prStylesCheckBox }
-                                prTheme = { prTheme.checkBox }
+                                prStyle = { prStyles?.checkbox }
                             />
                         )
-                    } */}
+                    }
                 </div>
 
             </div>
@@ -317,6 +302,14 @@ function popUpOk(title : string, message : string, dismissable : boolean = true,
     }
 }
 
+/**
+* Copies the pop-up props.
+
+* Parameters: 
+    @param pPopUpProps The object to copy.
+
+* @returns A deep copy of the given PopUpProps object.
+*/
 function copyPopUpProps(pPopUpProps : PopUpProps) : PopUpProps
 {
     return {
@@ -328,6 +321,14 @@ function copyPopUpProps(pPopUpProps : PopUpProps) : PopUpProps
     };
 }
 
+/**
+* Clears the pop-up blacklist so that all of the pop-ups (with IDs) across the website can show up again.
+*/
+function clearPopUpBlackList() : void
+{
+    localStorage.removeItem(gLclStrgKeyPopUpBlackList);
+}
+
 /*
 * A localStorage key whose value is an array of IDs (strings) which refer to the pop-up messages that can no longer
   be displayed. A pop-up usually makes it to this 'blacklist' when the user selects the 'Do Not Show Again' checkbox
@@ -335,6 +336,6 @@ function copyPopUpProps(pPopUpProps : PopUpProps) : PopUpProps
 */
 const gLclStrgKeyPopUpBlackList = "PopUpBlackList";
 
-export { PopUpStd as default, popUpOk, copyPopUpProps, gLclStrgKeyPopUpBlackList as lclStrgKeyPopUpBlackList };
+export { PopUpStd as default, popUpOk, copyPopUpProps, clearPopUpBlackList, gLclStrgKeyPopUpBlackList as lclStrgKeyPopUpBlackList };
 
 export type { StylesPopUpStd }

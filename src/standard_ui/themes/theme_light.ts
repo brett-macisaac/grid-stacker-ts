@@ -83,18 +83,19 @@ const light : Theme =
 
         container:
         {
-            background: "transparent",
+            background: "#FFFFFF",
+            header: "#000000",
             border: "#000000",
+            font: "#FFFFFF"
         },
 
         countLabel:
         {
-            background: "#FFFFFF",
-            border: "#000000",
-            font: "#000000",
-            fontValue: "#000000",
-            backgroundValue: "#FFFFFF",
-            borderLeftColorValue: "#000000",
+            backgroundTitle: "#FFFFFF",
+            backgroundCount: "#FFFFFF",
+            fontTitle: "#000000",
+            fontCount: "#000000",
+            border: "#FFFFFF",
         },
 
         textInput:
@@ -200,25 +201,6 @@ const light : Theme =
         grid:
         {
             background: "#FFFFFF"
-        },
-
-        container:
-        {
-            background: "#FFFFFF",
-            header: "#000000",
-            border: "#000000",
-            font: "#FFFFFF"
-        },
-
-        countLabel:
-        {
-            backgroundTitle: "#FFFFFF",
-            backgroundCount: "#FFFFFF",
-            fontTitle: "#000000",
-            fontCount: "#000000",
-            border: "#FFFFFF",
-            // borderTitle: "#000000",
-            // borderCount: "#000000"
         },
 
         game: 

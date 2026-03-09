@@ -20,8 +20,8 @@ type StylesButtonStd = {
 interface PropsButtonStd
 {
     prIcon?: IconFunc;
-    prIconSize?: number,
-    prIconColour?: string,
+    prIconSize?: number;
+    prIconColour?: string;
     prIconLocation?: Direction;
     prText?: string | number;
     prIsBold?: boolean;
@@ -199,6 +199,7 @@ const ButtonStd = memo(
                             prText = { prText } 
                             prIsBold = { prIsBold } 
                             prIsVertical = { prIsTextVertical }
+                            prUseVerticalWidthBugFix
                             prStyle = { lStyleText }
                         />
                     )

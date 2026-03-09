@@ -1,20 +1,14 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, CSSProperties } from 'react';
+import { useState, useMemo, useCallback, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, TextInputStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, popUpOk, NavButtonProps, useTheme, useWindowSize, StylesSliderStd, IconFunc } from "../../standard_ui/standard_ui";
+import { spacingN, ButtonStd, TextStd, TextInputStd, PageContainerStd, PopUpProps, popUpOk, NavButtonProps, useTheme, } from "@/standard_ui/standard_ui";
+import { Back, HeaderLogo, SettingsIcon } from "@/pages/nav_buttons";
 
-import Container, { StylesContainer } from '../../components/container/Container';
-import ButtonNextPage from '../../components/button_next_page/ButtonNextPage';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo, SettingsIcon } from "../nav_buttons";
-
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import CheckBoxStd, { StylesCheckBoxStd } from '../../components/check_box/CheckBoxStd';
-import { spacingN } from '../../utils/utils_ui';
-import { stylePageTitle, styleBtnNextPage, stylePageConGeneral, styleButtonGeneral } from '../../utils/styles';
-import { useUser } from '../../contexts/UserContext';
-import ApiRequestor, { isResponseError, ResponseError, ResponseUser } from '../../ApiRequestor';
-import { maxLengthUsername, maxLengthPassword } from '../../utils/constants';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import { stylePageTitle, stylePageConGeneral, styleButtonGeneral } from '@/utils/styles';
+import { useUser } from '@/contexts/UserContext';
+import ApiRequestor, { isResponseError, ResponseError, ResponseUser } from '@/ApiRequestor';
+import { maxLengthUsername, maxLengthPassword } from '@/utils/constants';
 
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];

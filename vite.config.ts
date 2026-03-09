@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ManifestOptions, VitePWA } from 'vite-plugin-pwa'
+import { fileURLToPath } from 'node:url'
 
 const gTesting : boolean = false;
 
@@ -32,6 +33,11 @@ const manifest : Partial<ManifestOptions> =
 // https://vite.dev/config/
 export default defineConfig(
     {
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url))
+            }
+        },
         build: {
             // Prevent files from being inlined in the JS. This can be a problem for sound files. https://stackoverflow.com/questions/69614671/vite-without-hash-in-filename
             assetsInlineLimit: 0,

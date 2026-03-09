@@ -1,37 +1,22 @@
-import React, { useState, useEffect, useContext, useRef, useMemo, useCallback, memo, CSSProperties } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd } from "../../standard_ui/standard_ui";
-import { useUser } from '../../contexts/UserContext';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo, SettingsIcon } from "../nav_buttons";
-import { User, MetaStats, GameStats, GameButtonProps, GameButtons } from "../../types";
-import ApiRequestor from '../../ApiRequestor';
-import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner, styleContainer, styleCountLabel } from "../../utils/styles"
-const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
-const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];
+import { TableData, utils, useWindowSize } from "@/standard_ui/standard_ui";
+import { useUser } from '@/contexts/UserContext';
+import { usePrefs } from '@/contexts/PreferenceContext';
+import { GameStats, GameButtons, BlockDirection, BlockAction } from "@/types";
 
-import { fontSizeN, spacingN } from "../../utils/utils_ui";
-import { lclStrgKeyMetaStats } from '../../utils/constants';
-
-import GamePortrait from './GamePortrait';
-import sounds from '../../assets/sounds/sounds';
-import gridSymbols from './symbols_buttons';
-import Vector2D from '../../classes/Vector2D';
-import Block, { BlockType } from '../../classes/Block';
-import GameStatsManager from '../../classes/GameStatsManager';
-import Grid, { GridDrawPos } from '../../classes/Grid';
-import GridDisplayer from '../../components/grid_displayer/GridDisplayer';
-import ButtonBlocks from '../../components/button_blocks/ButtonBlocks';
-import CountLabel, { StylesCountLabel } from '../../components/count_label/CountLabel';
-import Container, { StylesContainer } from '../../components/container/Container';
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import TableStd, { StyleTableStd, TableData } from '../../components/table_std/TableStd';
-import { lclStrgKeyPopUpBlackList } from '../../standard_ui/components/pop_up_std/PopUpStd';
-import { getTableDataHighScores } from "../../utils/utils_app_specific";
-import MetaStatsManager from '../../classes/MetaStatsManager';
-import GridSymbol from '../../classes/GridSymbol';
-import GameLandscape from './GameLandscape';
+import GamePortrait from '@/pages/game/GamePortrait';
+import gridSymbols from '@/pages/game/symbols_buttons';
+import Vector2D from '@/classes/Vector2D';
+import Block, { BlockType } from '@/classes/Block';
+import GameStatsManager from '@/classes/GameStatsManager';
+import Grid from '@/classes/Grid';
+import { getTableDataHighScores } from "@/utils/utils_app_specific";
+import MetaStatsManager from '@/classes/MetaStatsManager';
+import GridSymbol from '@/classes/GridSymbol';
+import GameLandscape from '@/pages/game/GameLandscape';
+import { BlockSoundBox, factoryBlockSoundBox } from '@/utils/sounds';
 
 function createBlockTallies() : Map<BlockType, number>
 {
@@ -80,6 +65,8 @@ function Game()
     const rfGrid = useRef<Grid>(
         new Grid(cxPrefs.prefs.cols, cxPrefs.prefs.rows)
     );
+
+    const rfBlocksFalling = useRef<boolean>(true);
 
     const rfGridHold = useRef<Grid>(new Grid(4, 4));
 
@@ -144,7 +131,7 @@ function Game()
 
             document.addEventListener("keydown", handleKeyDown);
 
-            document.addEventListener("keyup", handleKeyUp)
+            document.addEventListener("keyup", handleKeyUp);
 
             return () =>
             {
@@ -169,7 +156,9 @@ function Game()
             // Undraw the outline of the next block (as it's now the current block).
             lUndrawNextBlockOutline();
 
-            let lCanSpawn = rfGrid.current.drawBlockAt(rfBlock.current, "TopThreeRows");
+            let lCanSpawn = rfGrid.current.drawBlockAt(rfBlock.current, rfBlocksFalling.current ? "TopThreeRows" : "BottomThreeRows");
+
+            console.log(cxPrefs.prefs.blocks);
 
             rfNextBlocks.current = [ 
                 Block.getRandomBlock(cxPrefs.prefs.blocks),
@@ -276,8 +265,8 @@ function Game()
                     await utils.sleepFor(gSoftDrop ? gFallPeriodSoftDrop : lFallPeriodCurrent);
                 }
 
-                // Try to move the piece down the screen; if it can move down, continue.
-                if (moveBlock(Vector2D.sUp))//, true))
+                // Try to move the piece (direction depends on rfBlocksFalling).
+                if (moveBlock(rfBlocksFalling.current ? Vector2D.sUp : Vector2D.sDown))
                 { continue; }
 
                 // Disable user's ability to move the block.
@@ -287,6 +276,8 @@ function Game()
                 gSoftDrop = false;
 
                 const lNumFullLines = (rfGrid.current).getNumFullLines();
+
+                let lIsPerfectClear : boolean = false;
 
                 // If the user cleared at least one line.
                 if (lNumFullLines != 0)
@@ -303,7 +294,7 @@ function Game()
                     if (lNumFullLines > 1)
                     {
                         // Whether it's a 'perfect' clear, meaning that the grid is empty after the lines are cleared.
-                        const lIsPerfectClear = rfGrid.current.isEmptyAfterClear();
+                        lIsPerfectClear = rfGrid.current.isEmptyAfterClear();
 
                         const lLineClearStreakTotal : number = Math.pow(gLineClearStreakAbove2 + 1, 1) + Math.pow(gLineClearStreakAbove3 + 1, 2) + Math.pow(gLineClearStreakAbove4 + 1, 3);
 
@@ -341,8 +332,11 @@ function Game()
 
                     rfScore.current += lScoreFromLineClears;
 
-                    // Increment the score and lines.
-                    // addScoreAndLines(lScoreFromLineClears, lNumFullLines);
+                    // Switch the blocks' direction if the grid is now empty.
+                    if (lIsPerfectClear && cxPrefs.prefs.blockDirection == "alternate")
+                    {
+                        rfBlocksFalling.current = !rfBlocksFalling.current;
+                    }
 
                     if (lIsNewLevel)
                     {
@@ -416,29 +410,47 @@ function Game()
         []
     );
 
+    const lBlockSoundBox = useMemo<BlockSoundBox>(
+        () => factoryBlockSoundBox(cxPrefs.prefs.sounds),
+        [ cxPrefs.prefs.sounds ]
+    );
+
     const lPlaySound = useCallback(
-        async (pSound : string) =>
+        async (pAction : BlockAction) =>
         {
-            // Disable sound on iOS/MAC due to performance issues.
-            if (/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent))
+            // Disable sound on Apple devices due to performance issues.
+            const isAppleDevice = () : boolean =>
+            {
+                const navAny = navigator as Navigator & { userAgentData?: { platform?: string } };
+                const platform = navAny.userAgentData?.platform || navigator.platform || "";
+
+                // iPadOS may report itself as MacIntel with touch support.
+                const isIPadOS = platform === "MacIntel" && navigator.maxTouchPoints > 1;
+
+                return /Mac|iPhone|iPod|iPad/i.test(platform) || isIPadOS;
+            };
+
+            if (isAppleDevice())
+            {
                 return;
+            }
 
             if (!cxPrefs.prefs.soundOn)
+            {
                 return;
+            }
 
-            const lSoundStr = sounds[utils.getRandomInt(0, sounds.length - 1)];
-
-            let lSoundObj = new Audio(lSoundStr);
+            let lSoundObj = new Audio(lBlockSoundBox.getSound(pAction));
 
             lSoundObj.volume = 0.03;
 
             await lSoundObj.play();
         },
-        [ cxPrefs ]
+        [ cxPrefs, lBlockSoundBox ]
     );
 
     /*
-    * Clears all rows that are full and also shifts all other (non-full) rows downwards.
+    * Clears all rows that are full and also shifts all other (non-full) rows up or down (depending on direction).
      
      * Return Value:
          > The number of full rows that were cleared. 
@@ -460,8 +472,11 @@ function Game()
 
             let lIndexSound = 0;
 
-            for (let row = lGridDimensions.rows - 1; row >= 0; --row)
-            {   
+            let lRowStart = rfBlocksFalling.current ? lGridDimensions.rows - 1 : 0;
+            let lRowEnd = rfBlocksFalling.current ? 0 : lGridDimensions.rows - 1;
+
+            for (let row = lRowStart; lRowStart > lRowEnd ? row >= lRowEnd : row <= lRowEnd; rfBlocksFalling.current ? --row : ++row)
+            {
                 let lIsRowFull = true;
                 let lIsRowEmpty = true;
                 
@@ -500,7 +515,7 @@ function Game()
 
                         reRender();
 
-                        lPlaySound(gSounds.removeBlock[lIndexSound]);
+                        lPlaySound("clearBlock");
                         lIndexSound = (lIndexSound + 1) % gSounds.removeBlock.length;
 
                         await utils.sleepFor(lPausePerTile);
@@ -518,8 +533,10 @@ function Game()
                         if (rfGrid.current.isTileEmpty(col, row))
                         { continue; }
 
-                        // Copy the colour of the tile at coordinate (col,row) to the appropriate row (row + lNumFullRows).
-                        rfGrid.current.setCellColour(col, row + lNumFullRows, rfGrid.current.getCell(col, row).backgroundColour);
+                        let lNewRow = rfBlocksFalling.current ? row + lNumFullRows : row - lNumFullRows;
+
+                        // Copy the colour of the tile at coordinate (col,row) to the appropriate row (lNewRow).
+                        rfGrid.current.setCellColour(col, lNewRow, rfGrid.current.getCell(col, row).backgroundColour);
 
                         // Clear the colour of the tile at coordinate (col,row).
                         rfGrid.current.emptyTile(col, row);
@@ -527,20 +544,18 @@ function Game()
 
                         reRender();
 
-                        lPlaySound(gSounds.removeBlock[lIndexSound]);
+                        lPlaySound("clearBlock");
                         lIndexSound = (lIndexSound + 1) % gSounds.removeBlock.length;
 
                         await utils.sleepFor(lPausePerTile);
                     }
-                    
                 }
-                
             }
             
             // Return the number of full rows that were cleared.
             return lNumFullRows;
         },
-        [ lPlaySound ]
+        [ lPlaySound, lBlockSoundBox ]
     );
 
     const moveBlock = useCallback(
@@ -555,15 +570,15 @@ function Game()
             {
                 if (pMovement == Vector2D.sLeft)
                 {
-                    lPlaySound(gSounds.left);
+                    lPlaySound("left");
                 }
                 else if (pMovement == Vector2D.sRight)
                 {
-                    lPlaySound(gSounds.right);
+                    lPlaySound("right");
                 }
                 else if (pMovement == Vector2D.sUp)
                 {
-                    lPlaySound(gSounds.down);
+                    lPlaySound("down");
                 }
 
                 lDrawNextBlockOutline();
@@ -583,7 +598,7 @@ function Game()
             {
                 rfGrid.current.unDrawBlock(rfNextBlock.current, false);
 
-                rfGrid.current.drawBlockAt(rfNextBlock.current, "TopThreeRows", false);
+                rfGrid.current.drawBlockAt(rfNextBlock.current, rfBlocksFalling.current ? "TopThreeRows" : "BottomThreeRows", false);
             }
         },
         []
@@ -601,11 +616,11 @@ function Game()
         (pClockwise : boolean, p180 : boolean = true) =>
         {
             if (p180)
-                lPlaySound(gSounds.rotate180);
+                lPlaySound("oneEighty");
             else if (pClockwise)
-                lPlaySound(gSounds.clockwise);
+                lPlaySound("clockwise");
             else
-                lPlaySound(gSounds.anticlockwise);
+                lPlaySound("antiClockwise");
         },
         [ lPlaySound ]
     );
@@ -762,7 +777,7 @@ function Game()
 
             if (lLengthShift != 0)
             {
-                const lSound = rfGrid.current.wasMoveBlockedByBoundary ? gSounds.impactBoundary : gSounds.impactBlocks;
+                const lSound = rfGrid.current.wasMoveBlockedByBoundary ? "impactWall" : "impactBlocks";
 
                 lPlaySound(lSound);
 
@@ -801,7 +816,7 @@ function Game()
                 const lNextBlock = rfNextBlocks.current[rfNextBlocks.current.length - 1];
 
                 // See if the next block can be spawned.
-                lCanSpawn = rfGrid.current.drawBlockAt(lNextBlock, "TopThreeRows", true, false);
+                lCanSpawn = rfGrid.current.drawBlockAt(lNextBlock, rfBlocksFalling.current ? "TopThreeRows" : "BottomThreeRows", true, false);
 
                 if (lCanSpawn)
                 {
@@ -817,7 +832,7 @@ function Game()
             }
             else
             {
-                lCanSpawn = rfGrid.current.drawBlockAt(rfHeldBlock.current, "TopThreeRows");
+                lCanSpawn = rfGrid.current.drawBlockAt(rfHeldBlock.current, rfBlocksFalling.current ? "TopThreeRows" : "BottomThreeRows");
 
                 if (lCanSpawn)
                 {
@@ -836,7 +851,7 @@ function Game()
             if (lCanSpawn)
             {
                 reRender(); 
-                lPlaySound(gSounds.holdBlock);
+                lPlaySound("switchBlock");
                 didHeldBlockJustSpawn.current = true;
             }
             else if (rfBlock.current)
@@ -927,6 +942,7 @@ function Game()
             resetTallies();
             lResetNextBlocks();
             setHeldBlock(undefined);
+            rfBlocksFalling.current = cxPrefs.prefs.blockDirection == "fall" || cxPrefs.prefs.blockDirection == "alternate" ? true : false;
             reRender();
         },
         [ resetGameInfo, resetTallies, lResetNextBlocks ]
@@ -1004,7 +1020,7 @@ function Game()
             }
             else if (lKey === "ArrowUp")
             {
-                shiftBlock(Vector2D.sUp);
+                shiftBlock(rfBlocksFalling.current ? Vector2D.sUp : Vector2D.sDown);
             }
             else if (lKey === "ArrowLeft")
             {
@@ -1122,6 +1138,7 @@ function Game()
                 prAntiClockwiseHeld = { antiClockwiseHeldBlock }
                 prSwapNextBlockWithHeldBlock = { swapNextBlockWithHeldBlock }
                 prUpdater = { stUpdater }
+                // prBlocksFalling = { rfBlocksFalling.current }
                 prIsLoading = { stIsLoading }
             />
         );
@@ -1149,6 +1166,7 @@ function Game()
                 prAntiClockwiseHeld = { antiClockwiseHeldBlock }
                 prSwapNextBlockWithHeldBlock = { swapNextBlockWithHeldBlock }
                 prUpdater = { stUpdater }
+                prBlocksFalling = { rfBlocksFalling.current }
                 prIsLoading = { stIsLoading }
             />
         );

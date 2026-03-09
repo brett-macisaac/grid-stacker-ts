@@ -1,8 +1,8 @@
-import Vector2D from "./Vector2D";
-import Block from "./Block";
-import GridCell from "./GridCell";
+import Vector2D from "@/classes/Vector2D";
+import Block from "@/classes/Block";
+import GridCell from "@/classes/GridCell";
 
-type GridDrawPos = "CentreMid" | "CentreLeft" | "CentreTop" | "CentreBottom" | "TopThreeRows";
+type GridDrawPos = "CentreMid" | "CentreLeft" | "CentreTop" | "CentreBottom" | "TopThreeRows" | "BottomThreeRows";
 
 interface GridDimension { columns: number; rows: number }
 
@@ -227,13 +227,13 @@ class Grid
     */
     isEmpty() : boolean
     {
-        const lIndexBottomRow = this.#fNumRows - 1;
-        
-        // If the bottom row is empty, all other rows must also be empty.
         for (let col = 0; col < this.#fNumColumns; ++col)
         {
-            if (!this.isTileEmpty(col, lIndexBottomRow)) // If the tile isn't empty.
-            { return false; }
+            for (let row = 0; row < this.#fNumRows; ++row)
+            {
+                if (!this.isTileEmpty(col, row)) // If the tile isn't empty.
+                { return false; }
+            }
         }
         
         return true;
@@ -284,12 +284,10 @@ class Grid
 
     /*
     * Returns whether the grid would be empty after clearing.
+    * If there are no partially filled rows, this is true.
     */
     isEmptyAfterClear() : boolean
     {
-        if (this.isEmpty())
-            return true;
-
         for (let row = this.#fNumRows - 1; row >= 0; --row)
         {   
             let lIsRowFull = true;
@@ -297,11 +295,7 @@ class Grid
             
             for (let col = 0; col < this.#fNumColumns; ++col)
             {
-                if (!lIsRowFull && !lIsRowEmpty) // If both booleans have been falsified.
-                {
-                    return false;
-                }
-                else if (this.isTileEmpty(col, row))
+                if (this.isTileEmpty(col, row))
                 {
                     // If at least one tile is empty, the row can't be full.
                     lIsRowFull = false;
@@ -311,6 +305,12 @@ class Grid
                     // If at least one tile is filled, the row can't be empty.
                     lIsRowEmpty = false;
                 }
+            }
+
+            // If both booleans have been falsified (i.e. the row is partially filled).
+            if (!lIsRowFull && !lIsRowEmpty)
+            {
+                return false;
             }
         }
 
@@ -379,6 +379,29 @@ class Grid
             lSpawnLocation = new Vector2D(0, 0);
 
             for (let row = 0; row < 3; ++row)
+            {
+                lSpawnLocation.y = row;
+
+                for (let col = 0; col < this.#fNumColumns; ++col)
+                {
+                    lSpawnLocation.x = col;
+
+                    pBlock.position = lSpawnLocation;
+    
+                    if (!this.drawBlock(pBlock, pDrawBackground, pDoNotDrawBlock, pDrawShadow))
+                        continue;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        else if (pDrawPosition === "BottomThreeRows")
+        {
+            lSpawnLocation = new Vector2D(0, this.#fNumRows - 1);
+
+            for (let row = this.#fNumRows - 1; row >= this.#fNumRows - 3; --row)
             {
                 lSpawnLocation.y = row;
 

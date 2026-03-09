@@ -1,8 +1,8 @@
 import React, { CSSProperties, useContext, useState, memo } from "react";
 
-import { ButtonStd, StylesButtonStd } from '../../standard_ui/standard_ui';
-import TextBlocks from '../text_blocks/TextBlocks';
-import Block from "../../classes/Block";
+import { ButtonStd, StylesButtonStd } from '@/standard_ui/standard_ui';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import Block from "@/classes/Block";
 
 interface PropsButtonBlocks
 {

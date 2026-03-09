@@ -1,25 +1,19 @@
-import React, { useState, useEffect, useContext, useRef, useMemo, useCallback, memo, CSSProperties } from 'react';
+import { useState, useEffect, useMemo, useCallback, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ButtonStd, StylesButtonStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize } from "../../standard_ui/standard_ui";
-import { useUser } from '../../contexts/UserContext';
-import { Account, HeaderLogo, SettingsIcon } from "../nav_buttons";
-import { User, MetaStats } from "../../types";
-import ApiRequestor from '../../ApiRequestor';
-import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner, styleContainer, styleCountLabel } from "../../utils/styles"
+import { ContainerStd, CountLabelStd, spacingN, StylesButtonStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize } from "@/standard_ui/standard_ui";
+import { useUser } from '@/contexts/UserContext';
+import { Account, HeaderLogo, SettingsIcon } from "@/pages/nav_buttons";
+import { MetaStats } from "@/types";
+import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner, styleContainer, styleCountLabel } from "@/utils/styles"
 const gHeaderButtonsLeft : NavButtonProps[] = [ Account ];
 const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];
 
-import { fontSizeN, spacingN } from "../../utils/utils_ui";
-
-import Block from '../../classes/Block';
-import ButtonBlocks from '../../components/button_blocks/ButtonBlocks';
-import CountLabel, { StylesCountLabel } from '../../components/count_label/CountLabel';
-import Container, { StylesContainer } from '../../components/container/Container';
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import { lclStrgKeyPopUpBlackList } from '../../standard_ui/components/pop_up_std/PopUpStd';
-import { lclStrgKeyMetaStats } from '../../utils/constants';
-import MetaStatsManager from '../../classes/MetaStatsManager';
+import Block from '@/classes/Block';
+import ButtonBlocks from '@/components/button_blocks/ButtonBlocks';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import { lclStrgKeyPopUpBlackList } from '@/standard_ui/components/pop_up_std/PopUpStd';
+import MetaStatsManager from '@/classes/MetaStatsManager';
 
 function Menu() 
 {
@@ -57,7 +51,9 @@ function Menu()
         () =>
         {
             // The list of pop-ups that are set to never show again.
-            const lPopUpBlacklist : string[] = utils.getFromLocalStorage(lclStrgKeyPopUpBlackList) || [];
+            const lPopUpBlacklist : string[] = utils.getFromLocalStorageTyped<string[]>(
+                lclStrgKeyPopUpBlackList, (pValue : unknown) => Array.isArray(pValue)
+            ) || [];
 
             // Show the pop-up if the user isn't signed-in or the pop-up is set to never show again.
             if (!user && !lPopUpBlacklist.includes(gPopUpIdNotSignedIn))
@@ -167,21 +163,21 @@ function Menu()
 
                 {/* Stats */}
                 <div style = { styles.content }>
-                    <Container prStyles = { styleContainer } prTitle = "Local Stats" >
-                        <CountLabel prText = "Games Played" prCount = { formatNumber(stMetaStatsLocal.totalGames) } prStyles = { styleCountLabel } />
+                    <ContainerStd prStyles = { styleContainer } prTitle = "Local Stats" >
+                        <CountLabelStd prText = "Games Played" prCount = { formatNumber(stMetaStatsLocal.totalGames) } prStyles = { styleCountLabel } />
 
-                        <CountLabel prText = "Points Scored" prCount = { formatNumber(stMetaStatsLocal.totalScore) } prStyles = { styleCountLabel } />
+                        <CountLabelStd prText = "Points Scored" prCount = { formatNumber(stMetaStatsLocal.totalScore) } prStyles = { styleCountLabel } />
 
-                        <CountLabel prText = "Lines Cleared" prCount = { formatNumber(stMetaStatsLocal.totalLines) } prStyles = { styleCountLabel } />
-                    </Container>
+                        <CountLabelStd prText = "Lines Cleared" prCount = { formatNumber(stMetaStatsLocal.totalLines) } prStyles = { styleCountLabel } />
+                    </ContainerStd>
 
-                    <Container prStyles = { styleContainer } prTitle = { "Global Stats" } prIsLoading = { stIsLoadingGlobalStats }>
-                        <CountLabel prText = "Games Played" prCount = { stMetaStatsGlobal ? formatNumber(stMetaStatsGlobal.totalGames) : "-" } prStyles = { styleCountLabel } />
+                    <ContainerStd prStyles = { styleContainer } prTitle = { "Global Stats" } prIsLoading = { stIsLoadingGlobalStats }>
+                        <CountLabelStd prText = "Games Played" prCount = { stMetaStatsGlobal ? formatNumber(stMetaStatsGlobal.totalGames) : "-" } prStyles = { styleCountLabel } />
         
-                        <CountLabel prText = "Points Scored" prCount = { stMetaStatsGlobal ? formatNumber(stMetaStatsGlobal.totalScore) : "-" } prStyles = { styleCountLabel } />
+                        <CountLabelStd prText = "Points Scored" prCount = { stMetaStatsGlobal ? formatNumber(stMetaStatsGlobal.totalScore) : "-" } prStyles = { styleCountLabel } />
         
-                        <CountLabel prText = "Lines Cleared" prCount = { stMetaStatsGlobal ? formatNumber(stMetaStatsGlobal.totalLines) : "-"} prStyles = { styleCountLabel } />
-                    </Container>
+                        <CountLabelStd prText = "Lines Cleared" prCount = { stMetaStatsGlobal ? formatNumber(stMetaStatsGlobal.totalLines) : "-"} prStyles = { styleCountLabel } />
+                    </ContainerStd>
 
                     {/* <TextBlocks 
                         prText = "!@#$%^&*(){}[]''<>?/\|`~,.+=-:;" prSizeText = { 50 } 

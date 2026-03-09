@@ -1,38 +1,15 @@
-import React, { useState, useEffect, useContext, useRef, useMemo, useCallback, memo, CSSProperties } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo, CSSProperties } from 'react';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd } from "../../standard_ui/standard_ui";
-import { Dimensions } from '../../standard_ui/types';
-import { useUser } from '../../contexts/UserContext';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo, SettingsIcon } from "../nav_buttons";
-import { User, MetaStats, GameStats, GameButtonProps, GameButtons } from "../../types";
-import ApiRequestor from '../../ApiRequestor';
-import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner, styleContainer, styleCountLabel } from "../../utils/styles"
-const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
-const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];
+import { TableStd, StyleTableStd, TableData, fontSizeN, spacingN, ButtonStd, StylesButtonStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, useTheme, useWindowSize } from "@/standard_ui/standard_ui";
+import { defaultTableHeight } from "@/standard_ui/components/table_std/TableStd"
+import { Dimensions } from '@/standard_ui/types';
+import { GameButtonProps, GameButtons } from "@/types";
 
-import { fontSizeN, spacingN } from "../../utils/utils_ui";
-import { lclStrgKeyMetaStats } from '../../utils/constants';
-
-import sounds from '../../assets/sounds/sounds';
-import gridSymbols from './symbols_buttons';
-import Vector2D from '../../classes/Vector2D';
-import Block, { BlockType } from '../../classes/Block';
-import GameStatsManager from '../../classes/GameStatsManager';
-import Grid, { GridDrawPos } from '../../classes/Grid';
-import GridDisplayer from '../../components/grid_displayer/GridDisplayer';
-import ButtonBlocks from '../../components/button_blocks/ButtonBlocks';
-import CountLabel, { StylesCountLabel } from '../../components/count_label/CountLabel';
-import Container, { StylesContainer } from '../../components/container/Container';
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import TableStd, { defaultTableHeight, StyleTableStd, TableData } from '../../components/table_std/TableStd';
-import { lclStrgKeyPopUpBlackList } from '../../standard_ui/components/pop_up_std/PopUpStd';
-import { getTableDataHighScores } from "../../utils/utils_app_specific";
-import MetaStatsManager from '../../classes/MetaStatsManager';
-import GridSymbol from '../../classes/GridSymbol';
-
-const gSymbolSwap : GridSymbol = new GridSymbol('swap', Block.getRandomColour());
+import Block, { BlockType } from '@/classes/Block';
+import Grid from '@/classes/Grid';
+import GridDisplayer from '@/components/grid_displayer/GridDisplayer';
+import ButtonBlocks from '@/components/button_blocks/ButtonBlocks';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
 
 interface PropsGameLandscape
 {
@@ -440,7 +417,7 @@ function GameLandscape({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGam
                 {/* The user's current score, multiplier, and number of line clears. */}
                 <div style = { styles.conGameInfo }>
                     <TextBlocks prText = { `S:${utils.intToCommaSeparatedString(prScore)}` } prSizeText = { gLblGameInfoTextSize } prColourBackground = 'transparent' prRandomiseColourPatternStart = { false } />
-                    <TextBlocks prText = { `M:x${prMultiplier}` } prSizeText = { gLblGameInfoTextSize } prColourBackground = 'transparent' prRandomiseColourPatternStart = { false } />
+                    <TextBlocks prText = { `M:${prMultiplier}x` } prSizeText = { gLblGameInfoTextSize } prColourBackground = 'transparent' prRandomiseColourPatternStart = { false } />
                     <TextBlocks prText = { `L:${prLinesCleared}` } prSizeText = { gLblGameInfoTextSize } prColourBackground = 'transparent' prRandomiseColourPatternStart = { false } />
                 </div>
 

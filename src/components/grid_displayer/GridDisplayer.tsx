@@ -1,10 +1,10 @@
 import React, { CSSProperties, useMemo, memo, useCallback } from 'react';
 
-import { useTheme } from "../../standard_ui/standard_ui.js";
-import Grid, { GridDimension } from '../../classes/Grid';
-import GridCellDisplayer from './GridCellDisplayer.js';
-import { PressFunctions, getPressFunction } from "../../standard_ui/components/button_std/ButtonStd";
-import GridCell from '../../classes/GridCell.js';
+import { useTheme } from "@/standard_ui/standard_ui";
+import Grid, { GridDimension } from '@/classes/Grid';
+import GridCellDisplayer from '@/components/grid_displayer/GridCellDisplayer';
+import { PressFunctions, getPressFunction } from "@/standard_ui/components/button_std/ButtonStd";
+import GridCell from '@/classes/GridCell';
 
 interface GridDisplayerSizes
 {

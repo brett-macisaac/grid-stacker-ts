@@ -1,7 +1,7 @@
-import ApiRequestor, { UpdateGameStatsObject } from "../ApiRequestor";
-import utils from "../standard_ui/utils";
-import { GameStats, MetaStats } from "../types";
-import Grid from "./Grid";
+import ApiRequestor, { UpdateGameStatsObject } from "@/ApiRequestor";
+import utils from "@/standard_ui/utils";
+import { GameStats, isGameStats, MetaStats } from "@/types";
+import Grid from "@/classes/Grid";
 
 const gLclStrgKeyGameStatsKeys : string = "GameStatsArray";
 
@@ -25,7 +25,9 @@ class GameStatsManager
         // Initialise the array of keys.
         if (!GameStatsManager.#sIsLoadedGameStatsKeys)
         {
-            GameStatsManager.#sGameStatsKeys = new Set(utils.getFromLocalStorage<string[]>(gLclStrgKeyGameStatsKeys) || []);
+            GameStatsManager.#sGameStatsKeys = new Set(
+                utils.getFromLocalStorageTyped<string[]>(gLclStrgKeyGameStatsKeys, (v): v is string[] => Array.isArray(v)) || []
+            );
 
             GameStatsManager.#sIsLoadedGameStatsKeys = true;
         }
@@ -61,7 +63,7 @@ class GameStatsManager
         if (GameStatsManager.#sDataLocal.has(pKey))
             return GameStatsManager.#sDataLocal.get(pKey);
 
-        const lStats : GameStats | undefined = utils.getFromLocalStorage(pKey);
+        const lStats : GameStats | undefined = utils.getFromLocalStorageTyped<GameStats>(pKey, isGameStats);
 
         if (lStats)
         {

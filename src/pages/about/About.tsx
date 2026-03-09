@@ -1,19 +1,11 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, CSSProperties } from 'react';
+import { useMemo, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Brightness4 from '@mui/icons-material/Brightness4';
-import SportsEsports from '@mui/icons-material/SportsEsports';
-import Info from '@mui/icons-material/Info'; 
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd, IconFunc } from "../../standard_ui/standard_ui";
-import Container, { StylesContainer } from '../../components/container/Container';
-import ButtonNextPage from '../../components/button_next_page/ButtonNextPage';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo } from "../nav_buttons";
+import { ContainerStd, StylesContainerStd, fontSizeN, spacingN, TextStd, PageContainerStd, NavButtonProps, useTheme } from "@/standard_ui/standard_ui";
+import { Back, HeaderLogo } from "@/pages/nav_buttons";
 
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import CheckBoxStd, { StylesCheckBoxStd } from '../../components/check_box/CheckBoxStd';
-import { fontSizeN, spacingN } from '../../utils/utils_ui';
-import { stylePageTitle, styleBtnNextPage, stylePageConGeneral } from '../../utils/styles';
+import TextBlocks from "@/components/text_blocks/TextBlocks";
+import { stylePageTitle, stylePageConGeneral } from "@/utils/styles";
 
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 
@@ -44,7 +36,7 @@ function About()
                 prStyle = { lStyleTitle } 
             />
 
-            <Container prStyles = { gConText } prTitle = 'What is Grid Stacker?'>
+            <ContainerStd prStyles = { gConText } prTitle = 'What is Grid Stacker?'>
 
                 {/* <TextStd 
                     prText = "What is Grid Stacker?"
@@ -68,9 +60,9 @@ the blocks and score as many points until you lose. No special modes, simply sta
 //                    removeLineBreaks
                 />
 
-            </Container>
+            </ContainerStd>
 
-            <Container prStyles = { gConText } prTitle = 'Why was Grid Stacker created?'>
+            <ContainerStd prStyles = { gConText } prTitle = 'Why was Grid Stacker created?'>
                 {/* <TextStd 
                     prText = "Why was Grid Stacker Created?"
                     prIsBold
@@ -93,9 +85,9 @@ structures, the lack of customisation, etc.`
                     // prStyle = { styles.paragraph }
 //                    removeLineBreaks
                 />
-            </Container>
+            </ContainerStd>
 
-            <Container prStyles = { gConText } prTitle = 'How is Grid Stacker different?'>
+            <ContainerStd prStyles = { gConText } prTitle = 'How is Grid Stacker different?'>
                 {/* <TextStd 
                     prText = "How is Grid Stacker Different?"
                     prIsBold
@@ -262,9 +254,9 @@ multi-line clear.`
                     // prStyle = { styles.paragraph }
                 />
 
-            </Container>
+            </ContainerStd>
 
-            <Container prStyles = { gConText } prTitle = 'Who created Grid Stacker?'>
+            <ContainerStd prStyles = { gConText } prTitle = 'Who created Grid Stacker?'>
                 {/* <TextStd 
                     prText = "Who Created Grid Stacker?"
                     prIsBold
@@ -282,13 +274,13 @@ multi-line clear.`
                     }
                     // prStyle = { styles.paragraph }
                 />
-            </Container>
+            </ContainerStd>
 
         </PageContainerStd>
     );
 }
 
-const gConText : StylesContainer =
+const gConText : StylesContainerStd =
 {
     conInner: {
         width: "100%",

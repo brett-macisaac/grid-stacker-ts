@@ -1,6 +1,6 @@
-import { MetaStats } from "../types";
-import { utils } from "../standard_ui/standard_ui";
-import ApiRequestor from "../ApiRequestor";
+import { isMetaStats, MetaStats } from "@/types";
+import { utils } from "@/standard_ui/standard_ui";
+import ApiRequestor from "@/ApiRequestor";
 
 const gMetaStatsDefault : MetaStats = { totalGames: 0, totalScore: 0, totalLines: 0 };
 
@@ -16,7 +16,7 @@ class MetaStatsManager
     {
         if (!MetaStatsManager.#sMetaStatsLocal)
         {
-            MetaStatsManager.#sMetaStatsLocal = utils.getFromLocalStorage<MetaStats>(gLclStrgKeyMetaStats) || gMetaStatsDefault;
+            MetaStatsManager.#sMetaStatsLocal = utils.getFromLocalStorageTyped<MetaStats>(gLclStrgKeyMetaStats, isMetaStats) || gMetaStatsDefault;
         }
 
         return MetaStatsManager.#sMetaStatsLocal;
@@ -40,7 +40,7 @@ class MetaStatsManager
         lMetaStatsLocal.totalLines += pLines;
         lMetaStatsLocal.totalScore += pScore;
 
-        utils.setInLocalStorage<MetaStats>(gLclStrgKeyMetaStats, lMetaStatsLocal);
+        utils.setInLocalStorage(gLclStrgKeyMetaStats, lMetaStatsLocal);
 
         MetaStatsManager.#sMetaStatsLocal = lMetaStatsLocal;
     }

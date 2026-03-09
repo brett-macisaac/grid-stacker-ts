@@ -1,9 +1,9 @@
 import { useState, useMemo, CSSProperties, useRef, memo } from "react";
 
-import { useTheme, utils } from "../../standard_ui/standard_ui";
-import GridDisplayer from "../grid_displayer/GridDisplayer.js";
-import GridChar from "../../classes/GridChar.js";
-import Block from "../../classes/Block.js";
+import { useTheme, utils } from "@/standard_ui/standard_ui";
+import GridDisplayer from "@/components/grid_displayer/GridDisplayer";
+import GridChar from "@/classes/GridChar";
+import Block from "@/classes/Block";
 
 interface PropsTextBlocks
 {

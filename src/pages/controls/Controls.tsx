@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, CSSProperties } from 'react';
+import { useMemo, CSSProperties } from 'react';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd, IconFunc } from "../../standard_ui/standard_ui";
-import Container, { StylesContainer } from '../../components/container/Container';
-import ButtonNextPage from '../../components/button_next_page/ButtonNextPage';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo } from "../nav_buttons";
+import { spacingN, PageContainerStd, NavButtonProps, useTheme } from "@/standard_ui/standard_ui";
+import { Back, HeaderLogo } from "@/pages/nav_buttons";
 
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import CheckBoxStd, { StylesCheckBoxStd } from '../../components/check_box/CheckBoxStd';
-import { fontSizeN, spacingN } from '../../utils/utils_ui';
-import { stylePageTitle, styleBtnNextPage, stylePageConGeneral } from '../../utils/styles';
-import ControlDescription, { PropsControlDescription } from './ControlDescription';
-import GridSymbol from '../../classes/GridSymbol';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import { stylePageTitle, stylePageConGeneral } from '@/utils/styles';
+import ControlDescription, { PropsControlDescription } from '@/pages/controls/ControlDescription';
+import GridSymbol from '@/classes/GridSymbol';
 
-import { imgKeyA, imgKeyArrowDown, imgKeyArrowLeft, imgKeyArrowRight, imgKeyArrowUp, imgKeyD, imgKeyS, imgKeySpace, imgKeyW } from './imgsKeys';
+import { imgKeyA, imgKeyArrowDown, imgKeyArrowLeft, imgKeyArrowRight, imgKeyArrowUp, imgKeyD, imgKeyS, imgKeySpace, imgKeyW } from '@/pages/controls/imgsKeys';
 
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 

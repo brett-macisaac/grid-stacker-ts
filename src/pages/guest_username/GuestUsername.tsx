@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useMemo, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, TextInputStd, PageContainerStd, StylesPageContainerStd, utils, 
-         PopUpProps, popUpOk, NavButtonProps, useTheme, useWindowSize, StylesSliderStd } from "../../standard_ui/standard_ui";
-import { useUser } from '../../contexts/UserContext';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo, SettingsIcon } from "../nav_buttons";
-import { User, MetaStats, GameStats } from "../../types";
-import ApiRequestor from '../../ApiRequestor';
-import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner } from "../../utils/styles"
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import { spacingN } from '../../utils/utils_ui';
-import ButtonBlocks from '../../components/button_blocks/ButtonBlocks';
+import { spacingN, ButtonStd, StylesButtonStd, TextStd, TextInputStd, PageContainerStd, StylesPageContainerStd, utils, 
+         PopUpProps, popUpOk, NavButtonProps, useTheme, useWindowSize } from "@/standard_ui/standard_ui";
+import { usePrefs } from '@/contexts/PreferenceContext';
+import { Back, HeaderLogo, SettingsIcon } from "@/pages/nav_buttons";
+import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner } from "@/utils/styles"
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import ButtonBlocks from '@/components/button_blocks/ButtonBlocks';
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];
 
@@ -54,7 +50,10 @@ function GuestUsername()
 
     const [ stUsername, setUsername ] = useState<string>(cxPrefs.prefs.usernameGuest);
 
-    const [ stPrevPlayers, setPrevPlayers ] = useState<string[]>(utils.getFromLocalStorage(gLclStrgKeyPreviousPlayers) || []);
+    const [ stPrevPlayers, setPrevPlayers ] = useState<string[]>(
+        utils.getFromLocalStorageTyped<string[]>(gLclStrgKeyPreviousPlayers, (v): v is string[] => Array.isArray(v)) ||
+        []
+    );
 
     const navigate = useNavigate();
 
@@ -87,7 +86,7 @@ function GuestUsername()
                 return;
             }
 
-            cxPrefs.update(undefined, undefined, stUsername);
+            cxPrefs.update({ usernameGuest: stUsername });
 
             const lIsNewUser = !stPrevPlayers.includes(stUsername);
 

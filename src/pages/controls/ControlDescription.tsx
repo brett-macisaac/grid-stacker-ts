@@ -1,14 +1,12 @@
 import React, { useContext, memo, CSSProperties, useMemo } from 'react';
 
-import { useTheme, TextStd, useWindowSize, LoadAreaStd, PopUpStd, HeaderStd, StylesHeaderStd, StylesNavBarStd, NavBarStd } from "../../standard_ui/standard_ui";
+import { ContainerStd, StylesContainerStd, fontSizeN, spacingN, useTheme, TextStd, useWindowSize, LoadAreaStd, PopUpStd, HeaderStd, StylesHeaderStd, StylesNavBarStd, NavBarStd } from "@/standard_ui/standard_ui";
 
-import GridSymbol from '../../classes/GridSymbol';
+import GridSymbol from '@/classes/GridSymbol';
 //import gridSymbols from '../game/symbols_buttons';
-import GridDisplayer from '../../components/grid_displayer/GridDisplayer';
-import Container, { StylesContainer } from '../../components/container/Container';
-import { styleContainer } from "../../utils/styles";
-import { fontSizeN, spacingN } from '../../utils/utils_ui';
-import Block from '../../classes/Block';
+import GridDisplayer from '@/components/grid_displayer/GridDisplayer';
+import { styleContainer } from "@/utils/styles";
+import Block from '@/classes/Block';
 
 interface PropsControlDescription 
 {
@@ -85,7 +83,7 @@ const ControlDescription = memo(
         );
 
         return (
-            <Container prStyles = { lStyleContainer } prTitle = { prTitle }>
+            <ContainerStd prStyles = { lStyleContainer } prTitle = { prTitle }>
 
                 {/* <TextStd 
                     prText = { prTitle }
@@ -162,13 +160,13 @@ const ControlDescription = memo(
 
                 </div>
 
-            </Container>
+            </ContainerStd>
         );
     }
 
 );
 
-const lStyleContainer : StylesContainer = {
+const lStyleContainer : StylesContainerStd = {
     conOuter: { ...styleContainer.conOuter, maxWidth: 400 },
     conInner: { ...styleContainer.conInner, padding: spacingN(), rowGap: spacingN() },
     text: { ...styleContainer.text }

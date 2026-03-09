@@ -1,32 +1,24 @@
-import React, { useState, useEffect, useContext, useRef, useMemo, useCallback, memo, CSSProperties } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback, CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 import ClearIcon from '@mui/icons-material/Clear';
 
-import { ButtonStd, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd } from "../../standard_ui/standard_ui";
-import { useUser } from '../../contexts/UserContext';
-import { usePrefs } from '../../contexts/PreferenceContext';
-import { Account, Back, HeaderLogo, SettingsIcon } from "../nav_buttons";
-import { User, MetaStats, GameStats } from "../../types";
-import ApiRequestor from '../../ApiRequestor';
-import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner, styleContainer, styleCountLabel } from "../../utils/styles"
+import { TableStd, StyleTableStd, TableData, ContainerStd, CountLabelStd, fontSizeN, spacingN, StylesButtonStd, SliderStd, TextStd, PageContainerStd, StylesPageContainerStd, utils, PopUpProps, NavButtonProps, useTheme, useWindowSize, StylesSliderStd } from "@/standard_ui/standard_ui";
+import { useUser } from '@/contexts/UserContext';
+import { usePrefs } from '@/contexts/PreferenceContext';
+import { Back, HeaderLogo, SettingsIcon } from "@/pages/nav_buttons";
+import { GameStats } from "@/types";
+import { stylePageConMenuWithNavButton, styleBtnNextPageBottom, styleConBtnNextPage, stylePageTitle, styleConInner, styleContainer, styleCountLabel } from "@/utils/styles"
 const gHeaderButtonsLeft : NavButtonProps[] = [ Back ];
 const gHeaderButtonsRight : NavButtonProps[] = [ SettingsIcon ];
 
-import { fontSizeN, spacingN } from "../../utils/utils_ui";
-import { lclStrgKeyPreferences } from "../../utils/constants";
-
-import Block from '../../classes/Block';
-import GameStatsManager from '../../classes/GameStatsManager';
-import Grid from '../../classes/Grid';
-import GridDisplayer from '../../components/grid_displayer/GridDisplayer';
-import ButtonBlocks from '../../components/button_blocks/ButtonBlocks';
-import CountLabel, { StylesCountLabel } from '../../components/count_label/CountLabel';
-import Container, { StylesContainer } from '../../components/container/Container';
-import TextBlocks from '../../components/text_blocks/TextBlocks';
-import TableStd, { StyleTableStd, TableData } from '../../components/table_std/TableStd';
-import { lclStrgKeyPopUpBlackList } from '../../standard_ui/components/pop_up_std/PopUpStd';
-import { getTableDataHighScores } from "../../utils/utils_app_specific";
+import Block from '@/classes/Block';
+import GameStatsManager from '@/classes/GameStatsManager';
+import Grid from '@/classes/Grid';
+import GridDisplayer from '@/components/grid_displayer/GridDisplayer';
+import ButtonBlocks from '@/components/button_blocks/ButtonBlocks';
+import TextBlocks from '@/components/text_blocks/TextBlocks';
+import { getTableDataHighScores } from "@/utils/utils_app_specific";
 
 const gRngCols = { min: 4, max: 10 };
 const gRngRows = { min: 4, max: 22 };
@@ -181,7 +173,7 @@ function GameSettings()
     const lHandleNext = useCallback(
         () =>
         {
-            cxPrefs.update(stNumColumns, stNumRows, undefined, stBlockList);
+            cxPrefs.update({ cols: stNumColumns, rows: stNumRows, blocks: stBlockList });
 
             if (cxUser.user)
             {
@@ -331,7 +323,7 @@ function GameSettings()
                     prStyle = { lStyleTitle } 
                 />
 
-                <Container prTitle = "GRID DIMENSIONS" prStyles = { styleContainer }>
+                <ContainerStd prTitle = "GRID DIMENSIONS" prStyles = { styleContainer }>
 
                     <TextStd
                         prText = "Select the grid's dimensions." 
@@ -389,9 +381,9 @@ function GameSettings()
                         </div>
 
                     </div>
-                </Container>
+                </ContainerStd>
 
-                <Container prTitle = "BLOCKS" prStyles = { styleContainer }>
+                <ContainerStd prTitle = "BLOCKS" prStyles = { styleContainer }>
                     <TextStd prText = "Select the blocks you want to play with." prStyle = { styles.prompt } prIsItalic />
                     <div style = { styles.conBlocksInner }>
                         {
@@ -423,9 +415,9 @@ function GameSettings()
                             )
                         }
                     </div>
-                </Container>
+                </ContainerStd>
 
-                <Container prTitle = "STATS" prStyles = { styleContainer } prIsLoading = { stIsLoadingStats }>
+                <ContainerStd prTitle = "STATS" prStyles = { styleContainer } prIsLoading = { stIsLoadingStats }>
                     <TextStd prText = "Stats for the selected game." prIsItalic />
 
                     <TableStd 
@@ -438,11 +430,11 @@ function GameSettings()
                         //prStyleColumn = {{ backgroundColor: theme.content }}
                     />
 
-                    <CountLabel prText = "Games Played (Global)" prCount = { utils.intToCommaSeparatedString(stTimesPlayed.global) } prStyles = { styleCountLabel } />
+                    <CountLabelStd prText = "Games Played (Global)" prCount = { utils.intToCommaSeparatedString(stTimesPlayed.global) } prStyles = { styleCountLabel } />
 
-                    <CountLabel prText = "Games Played (Local)" prCount = { utils.intToCommaSeparatedString(stTimesPlayed.local) } prStyles = { styleCountLabel } />
+                    <CountLabelStd prText = "Games Played (Local)" prCount = { utils.intToCommaSeparatedString(stTimesPlayed.local) } prStyles = { styleCountLabel } />
 
-                </Container>
+                </ContainerStd>
 
                 {/* Display stats for this game, such as number of times played and high-score. */}
 

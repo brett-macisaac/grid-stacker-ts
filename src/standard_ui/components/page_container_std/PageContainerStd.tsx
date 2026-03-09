@@ -188,6 +188,7 @@ const PageContainerStd = memo(
                             prButtons = { stPopUpProps.buttons }
                             prDismissable = { stPopUpProps.dismissable }
                             prId = { stPopUpProps.id }
+                            prShowNeverShowAgainCheckbox = { stPopUpProps.showNeverShowAgainCheckbox }
                             prFuncRemovePopUp = { lRemovePopUp } 
                         />
                 }

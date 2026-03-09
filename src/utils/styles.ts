@@ -1,11 +1,8 @@
 import { CSSProperties } from "react";
 
-import { StylesButtonStd, StylesHeaderStd, StylesPageContainerStd } from "../standard_ui/standard_ui";
-import { StylesContainer } from "../components/container/Container";
-import { StylesCountLabel } from "../components/count_label/CountLabel";
-import { spacingN, fontSizeN } from "./utils_ui";
-import { Theme } from "../standard_ui/themes/theme_types";
-import { StylesButtonNextPage } from "../components/button_next_page/ButtonNextPage";
+import { spacingN, fontSizeN, StylesButtonStd, StylesHeaderStd, StylesPageContainerStd, StylesContainerStd, StylesCountLabelStd } from "@/standard_ui/standard_ui";
+import { Theme } from "@/standard_ui/themes/theme_types";
+import { StylesButtonNextPage } from "@/components/button_next_page/ButtonNextPage";
 
 function styleHeader(pIsHorizontal: boolean) : StylesHeaderStd
 {
@@ -92,7 +89,7 @@ const styleConInner : CSSProperties =
     rowGap: spacingN(),
 };
 
-const styleContainer : StylesContainer =
+const styleContainer : StylesContainerStd =
 {
     conOuter:
     {
@@ -113,7 +110,7 @@ const styleContainer : StylesContainer =
     }
 };
 
-const styleCountLabel : StylesCountLabel = {
+const styleCountLabel : StylesCountLabelStd = {
     conOuter:
     {
         border: "none",
@@ -130,7 +127,7 @@ const styleCountLabel : StylesCountLabel = {
     },
     textCount:
     {
-        fontSize: fontSizeN(-1),
+        fontSize: fontSizeN(-0.5),
         paddingTop: fontSizeN() / 2,
         paddingBottom: fontSizeN() / 2
     }

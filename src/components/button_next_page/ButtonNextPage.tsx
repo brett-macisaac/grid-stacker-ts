@@ -1,7 +1,7 @@
 import React, { useMemo, memo, CSSProperties } from "react";
 import ChevronRight from '@mui/icons-material/ChevronRight';
 
-import { ButtonStd, TextStd, useTheme, IconFunc, StylesButtonStd } from '../../standard_ui/standard_ui';
+import { ButtonStd, TextStd, useTheme, IconFunc, StylesButtonStd } from '@/standard_ui/standard_ui';
 
 type StylesButtonNextPage =
 {

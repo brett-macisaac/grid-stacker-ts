@@ -1,6 +1,6 @@
-import { NavButtonProps, IconFuncMultiColour } from "../standard_ui/types";
+import { NavButtonProps, IconFuncMultiColour } from "@/standard_ui/types";
 
-import HeaderLogo from "../components/header_logo/HeaderLogo";
+import HeaderLogo from "@/components/header_logo/HeaderLogo";
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import HomeIcon from '@mui/icons-material/Home';

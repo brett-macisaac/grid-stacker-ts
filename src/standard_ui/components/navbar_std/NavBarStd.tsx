@@ -71,8 +71,9 @@ const NavBarStd = memo(
                 const lIsHorizontal : boolean = prOrientation == "Horizontal";
 
                 return {
-                    width: lIsHorizontal ? "100%" : "",
+                    width: lIsHorizontal ? "100%" : "auto",
                     height: lIsHorizontal ? "auto" : "100%",
+                    flexShrink: 0,
                     // padding: 10,
                     ...prStyles?.conOuter
                 }

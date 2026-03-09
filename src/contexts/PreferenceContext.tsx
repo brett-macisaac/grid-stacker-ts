@@ -1,26 +1,33 @@
-import React, { createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
-import utils from '../standard_ui/utils.ts';
-import { Preferences } from "../types.ts";
+import React, { createContext, useContext, useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import utils from '@/standard_ui/utils';
+import { BlockDirection, isPreferences, Preferences } from "@/types";
+import { blockSoundsDefault } from '@/utils/sounds';
 
 interface ValuePrefContext
 { 
     prefs: Preferences, 
-    update: (pCols?: number, pRows?: number, pUsernameGuest?: string, 
-             pBlocks?: string, pSoundOn?: boolean) => void,
+    update: (pPrefs: Partial<Preferences>) => void,
 }
 
-const gPrefsDefault : Preferences = { cols: 4, rows: 9, usernameGuest: "", blocks: "IJLOSTZ", soundOn: true };
+const gPrefsDefault : Preferences = { 
+    cols: 4, 
+    rows: 9, 
+    usernameGuest: "", 
+    blocks: "IJLOSTZ", 
+    soundOn: true, 
+    sounds: blockSoundsDefault,
+    blockDirection: "fall" 
+};
 
 const PrefContext = createContext<ValuePrefContext>(
     { 
         prefs: gPrefsDefault, 
-        update: (pCols?: number, pRows?: number, pUsernameGuest?: string, 
-                 pBlocks?: string, pSoundOn?: boolean) => { console.log("PrefContext: Empty update function. Is the component a child of PrefProvider?"); }, 
+        update: (pPrefs: Partial<Preferences>) => { console.log("PrefContext: Empty update function. Is the component a child of PrefProvider?"); }, 
     }
 );
 
 /*
-* A localStorage key whose value is a string that corresponding to the current stored user..
+* A localStorage key whose value is a string that corresponding to the current stored preferences.
 */
 const gLclStrgKeyPrefs : string = "GameSettings";
 
@@ -31,28 +38,31 @@ interface PropsPrefProvider
 
 function PrefProvider({ children } : PropsPrefProvider) 
 {
-    /* The name of the current theme. */
-    const [ stPrefs, setPrefs ] = useState<Preferences>(utils.getFromLocalStorage(gLclStrgKeyPrefs) ?? gPrefsDefault);
+    /* The user's preferences. */
+    const [ stPrefs, setPrefs ] = useState<Preferences>(
+        utils.getFromLocalStorageTyped<Preferences>(gLclStrgKeyPrefs, isPreferences) || gPrefsDefault
+    );
 
     /**
     * Changes the user's (device's) preferences.
     */
     const update = useCallback(
-        (pCols?: number, pRows?: number, pUsernameGuest?: string, 
-         pBlocks?: string, pSoundOn?: boolean) : void =>
+        (pPrefs: Partial<Preferences>) : void =>
         {
             setPrefs(
                 (prev : Preferences) =>
                 {
                     const lPrefsNew : Preferences = {
-                        cols: pCols ? pCols : prev.cols,
-                        rows: pRows ? pRows : prev.rows,
-                        usernameGuest: pUsernameGuest ? pUsernameGuest : prev.usernameGuest,
-                        blocks: pBlocks ? pBlocks : prev.blocks,
-                        soundOn: pSoundOn != undefined ? pSoundOn : prev.soundOn,
-                    }
+                        cols: pPrefs.cols ? pPrefs.cols : prev.cols,
+                        rows: pPrefs.rows ? pPrefs.rows : prev.rows,
+                        usernameGuest: pPrefs.usernameGuest ? pPrefs.usernameGuest : prev.usernameGuest,
+                        blocks: pPrefs.blocks ? pPrefs.blocks : prev.blocks,
+                        soundOn: pPrefs.soundOn != undefined ? pPrefs.soundOn : prev.soundOn,
+                        blockDirection: pPrefs.blockDirection ? pPrefs.blockDirection : prev.blockDirection,
+                        sounds: pPrefs.sounds ? pPrefs.sounds : prev.sounds,
+                    };
 
-                    utils.setInLocalStorage<Preferences>(gLclStrgKeyPrefs, lPrefsNew);
+                    utils.setInLocalStorage(gLclStrgKeyPrefs, lPrefsNew);
 
                     return lPrefsNew;
                 }

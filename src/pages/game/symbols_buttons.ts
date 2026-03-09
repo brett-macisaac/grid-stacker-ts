@@ -1,4 +1,4 @@
-import GridSymbol from '../../classes/GridSymbol';
+import GridSymbol from '@/classes/GridSymbol';
 
 type GameButtonSymbols = {
     

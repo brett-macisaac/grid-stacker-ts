@@ -1,8 +1,8 @@
 import React, { useMemo, memo, CSSProperties } from "react";
 
-import { TextStd, useTheme } from '../../standard_ui/standard_ui';
+import { TextStd, useTheme } from '../../standard_ui';
 
-type StylesCountLabel =
+type StylesCountLabelStd =
 {
     conOuter?: React.CSSProperties;
     conCount?: React.CSSProperties;
@@ -14,11 +14,12 @@ interface PropsCountLabel
 {
     prText: string;
     prCount: number | string;
-    prStyles?: StylesCountLabel;
+    prStyles?: StylesCountLabelStd;
 }
-const CountLabel = memo(
 
-    function CountLabel({ prText, prCount, prStyles } : PropsCountLabel)
+const CountLabelStd = memo(
+
+    function CountLabelStd({ prText, prCount, prStyles } : PropsCountLabel)
     {
         // Acquire global theme.
         const { theme } = useTheme();
@@ -31,7 +32,7 @@ const CountLabel = memo(
                 return { 
                     ...styles.conOuter,
                     columnGap: "1em",//lSizeFont, 
-                    backgroundColor: theme.cst.countLabel.backgroundTitle, borderColor: theme.cst.countLabel.border,
+                    backgroundColor: theme.std.countLabel.backgroundTitle, borderColor: theme.std.countLabel.border,
                     ...prStyles?.conOuter, 
                 };
             },
@@ -42,8 +43,8 @@ const CountLabel = memo(
             () =>
             {
                 return { 
-                    ...styles.conCount, backgroundColor: theme.cst.countLabel.backgroundCount, 
-                    borderLeftColor: theme.cst.countLabel.border, paddingRight: "0.6em", paddingLeft: "0.6em", 
+                    ...styles.conCount, backgroundColor: theme.std.countLabel.backgroundCount, 
+                    borderLeftColor: theme.std.countLabel.border, paddingRight: "0.6em", paddingLeft: "0.6em", 
                     minWidth: "3em",
                     ...prStyles?.conCount
                 };
@@ -55,7 +56,7 @@ const CountLabel = memo(
             () =>
             {
                 return { 
-                    color: theme.cst.countLabel.fontTitle,
+                    color: theme.std.countLabel.fontTitle,
                     marginLeft: "1em",
                     ...prStyles?.textTitle
                 };
@@ -67,7 +68,7 @@ const CountLabel = memo(
             () =>
             {
                 return { 
-                    color: theme.cst.countLabel.fontCount,
+                    color: theme.std.countLabel.fontCount,
                     ...prStyles?.textCount
                 };
             },
@@ -119,6 +120,6 @@ const styles : { [key: string] : CSSProperties } =
 
 };
 
-export default CountLabel;
+export default CountLabelStd;
 
-export type { StylesCountLabel };
+export type { StylesCountLabelStd };

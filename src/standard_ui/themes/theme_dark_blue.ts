@@ -83,18 +83,19 @@ const darkBlue : Theme =
 
         container:
         {
-            background: "transparent",
+            background: "#2F2F69",
+            header: "#060627",
             border: "#B8B8FC",
+            font: "#FFFFFF"
         },
 
         countLabel:
         {
-            background: "#060627",
+            backgroundTitle: "#060627",
+            backgroundCount: "#060627",
+            fontTitle: "#FFFFFF",
+            fontCount: "#FFFFFF",
             border: "#B8B8FC",
-            font: "#ffffff",
-            fontValue: "#ffffff",
-            backgroundValue: "#060627",
-            borderLeftColorValue: "#B8B8FC",
         },
 
         textInput:
@@ -200,25 +201,6 @@ const darkBlue : Theme =
         grid:
         {
             background: "#2F2F69"
-        },
-
-        container:
-        {
-            background: "#2F2F69",
-            header: "#060627",
-            border: "#B8B8FC",
-            font: "#FFFFFF"
-        },
-
-        countLabel:
-        {
-            backgroundTitle: "#060627",
-            backgroundCount: "#060627",
-            fontTitle: "#FFFFFF",
-            fontCount: "#FFFFFF",
-            border: "#B8B8FC",
-            // borderTitle: "#FFFFFF",
-            // borderCount: "#FFFFFF"
         },
 
         game: 

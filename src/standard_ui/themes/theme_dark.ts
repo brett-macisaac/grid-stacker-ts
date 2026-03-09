@@ -83,18 +83,19 @@ const dark : Theme =
 
         container:
         {
-            background: "transparent",
+            background: "#272727",
+            header: "#000000",
             border: "#FAFAFA",
+            font: "#FFFFFF"
         },
 
         countLabel:
         {
-            background: "#000000",
-            border: "#FAFAFA",
-            font: "#ffffff",
-            fontValue: "#ffffff",
-            backgroundValue: "#000000",
-            borderLeftColorValue: "#FAFAFA",
+            backgroundTitle: "#000000",
+            backgroundCount: "#000000",
+            fontTitle: "#FFFFFF",
+            fontCount: "#FFFFFF",
+            border: "#FFFFFF",
         },
 
         textInput:
@@ -200,25 +201,6 @@ const dark : Theme =
         grid:
         {
             background: "#272727"
-        },
-
-        container:
-        {
-            background: "#272727",
-            header: "#000000",
-            border: "#FAFAFA",
-            font: "#FFFFFF"
-        },
-
-        countLabel:
-        {
-            backgroundTitle: "#000000",
-            backgroundCount: "#000000",
-            fontTitle: "#FFFFFF",
-            fontCount: "#FFFFFF",
-            border: "#FFFFFF",
-            // borderTitle: "#FFFFFF",
-            // borderCount: "#FFFFFF"
         },
 
         game: 

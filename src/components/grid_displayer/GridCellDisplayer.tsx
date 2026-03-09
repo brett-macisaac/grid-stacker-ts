@@ -1,6 +1,6 @@
 import { CSSProperties, useMemo, memo } from 'react';
 
-import { useTheme } from "../../standard_ui/standard_ui.js";
+import { useTheme } from "@/standard_ui/standard_ui";
 
 interface PropsGridCell
 {
