@@ -434,14 +434,14 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
                         }
                     </div>
 
-                    {/* <GridDisplayer 
+                    <GridDisplayer 
                         prGrid = { gSymbolSwap.grid }
                         prMaxHeight = { lMaxDimensionsTallyGrids.height } prMaxWidth = { lMaxDimensionsTallyGrids.width } 
                         prColourBackground = 'transparent' prColourBorder = { prGameButtons.hold.symbol.colour }
                         prColourFilledCell = { prGameButtons.hold.symbol.colour }
                         prStyle = { lStyleGridSideContainers } prPadding = { 4 }
                         prOnPress = { prSwapNextBlockWithHeldBlock }
-                    /> */}
+                    />
 
                     <div style = { styles.conHoldBlock }>
                         <TextStd prText = "HOLD" prIsBold prStyle = { styles.lblTitle } />
@@ -546,6 +546,8 @@ function GamePortrait({ prGrid, prBlockTallies, prNextBlocks, prGridHold, prGame
         </PageContainerStd>
     );
 }
+
+const gSymbolSwap : GridSymbol = new GridSymbol("swap");
 
 const gConTopHeight : string = "75%";
 

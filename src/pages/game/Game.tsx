@@ -430,10 +430,10 @@ function Game()
                 return /Mac|iPhone|iPod|iPad/i.test(platform) || isIPadOS;
             };
 
-            if (isAppleDevice())
-            {
-                return;
-            }
+            // if (isAppleDevice())
+            // {
+            //     return;
+            // }
 
             if (!cxPrefs.prefs.soundOn)
             {
@@ -442,7 +442,7 @@ function Game()
 
             let lSoundObj = new Audio(lBlockSoundBox.getSound(pAction));
 
-            lSoundObj.volume = 0.15;
+            lSoundObj.volume = 0.21;
 
             await lSoundObj.play();
         },
