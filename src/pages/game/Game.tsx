@@ -1095,7 +1095,7 @@ function Game()
                 rightMax: { onPress: () => shiftBlock(Vector2D.sRight), symbol: new GridSymbol('rightMax', lRandomColours[0]) },
 
                 down: { onPress: () => { gSoftDrop = !gSoftDrop; }, symbol: new GridSymbol('down', lRandomColours[1]) },
-                downMax: { onPress: () => shiftBlock(Vector2D.sUp), symbol: new GridSymbol('downMax', lRandomColours[1]) },
+                downMax: { onPress: () => shiftBlock(rfBlocksFalling.current ? Vector2D.sUp : Vector2D.sDown), symbol: new GridSymbol('downMax', lRandomColours[1]) },
 
                 clockwise: { onPress: () => rotateBlock(true), symbol: new GridSymbol('clockwise', lRandomColours[2]) },
                 anticlockwise: { onPress: () => rotateBlock(false), symbol: new GridSymbol('anticlockwise', lRandomColours[2]) },
